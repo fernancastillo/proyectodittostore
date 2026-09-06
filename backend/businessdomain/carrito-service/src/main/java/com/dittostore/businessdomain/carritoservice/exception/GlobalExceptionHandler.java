@@ -16,12 +16,12 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(CarritoNotFoundException.class)
     public ResponseEntity<Map<String, Object>> manejarCarritoNoEncontrado(CarritoNotFoundException ex) {
-        return construirRespuesta(ex.getMessage());
+        return construirRespuesta(HttpStatus.NOT_FOUND, ex.getMessage());
     }
 
     @ExceptionHandler(CarritoItemNotFoundException.class)
     public ResponseEntity<Map<String, Object>> manejarItemNoEncontrado(CarritoItemNotFoundException ex) {
-        return construirRespuesta(ex.getMessage());
+        return construirRespuesta(HttpStatus.NOT_FOUND, ex.getMessage());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -38,11 +38,16 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(body);
     }
 
-    private ResponseEntity<Map<String, Object>> construirRespuesta(String mensaje) {
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Map<String, Object>> manejarGeneral(Exception ex) {
+        return construirRespuesta(HttpStatus.INTERNAL_SERVER_ERROR, "Ocurrio un error inesperado");
+    }
+
+    private ResponseEntity<Map<String, Object>> construirRespuesta(HttpStatus status, String mensaje) {
         Map<String, Object> body = new HashMap<>();
         body.put("timestamp", LocalDateTime.now());
-        body.put("status", HttpStatus.NOT_FOUND.value());
+        body.put("status", status.value());
         body.put("error", mensaje);
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
+        return ResponseEntity.status(status).body(body);
     }
 }

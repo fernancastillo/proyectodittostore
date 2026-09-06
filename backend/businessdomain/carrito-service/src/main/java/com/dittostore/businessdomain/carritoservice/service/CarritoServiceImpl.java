@@ -86,6 +86,9 @@ public class CarritoServiceImpl implements CarritoService {
 
         CarritoItem item = carritoItemRepository.findById(itemId)
                 .orElseThrow(() -> new CarritoItemNotFoundException(itemId));
+        if (!item.getCarritoId().equals(carritoId)) {
+            throw new CarritoItemNotFoundException(itemId);
+        }
 
         carritoItemRepository.delete(item);
 
