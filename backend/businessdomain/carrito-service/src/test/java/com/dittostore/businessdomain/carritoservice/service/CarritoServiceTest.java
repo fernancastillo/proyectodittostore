@@ -6,6 +6,7 @@ import com.dittostore.businessdomain.carritoservice.dto.CarritoResponseDTO;
 import com.dittostore.businessdomain.carritoservice.entity.Carrito;
 import com.dittostore.businessdomain.carritoservice.entity.CarritoItem;
 import com.dittostore.businessdomain.carritoservice.entity.EstadoCarrito;
+import com.dittostore.businessdomain.carritoservice.exception.CarritoItemNotFoundException;
 import com.dittostore.businessdomain.carritoservice.exception.CarritoNotFoundException;
 import com.dittostore.businessdomain.carritoservice.repository.CarritoItemRepository;
 import com.dittostore.businessdomain.carritoservice.repository.CarritoRepository;
@@ -35,6 +36,7 @@ class CarritoServiceTest {
     private CarritoServiceImpl carritoService;
 
     private Carrito carrito;
+    private CarritoItem item;
 
     @BeforeEach
     void setUp() {
@@ -45,6 +47,14 @@ class CarritoServiceTest {
                 .usuarioId(10L)
                 .estado(EstadoCarrito.ACTIVO)
                 .fechaCreacion(LocalDateTime.now())
+                .build();
+
+        item = CarritoItem.builder()
+                .id(20L)
+                .carritoId(1L)
+                .productoId(5L)
+                .cantidad(2)
+                .precioUnitario(new BigDecimal("55000"))
                 .build();
     }
 
@@ -83,6 +93,35 @@ class CarritoServiceTest {
         carritoService.agregarItem(1L, itemDTO);
 
         verify(carritoItemRepository, times(1)).save(any(CarritoItem.class));
+    }
+
+    @Test
+    void eliminarItem_cuandoItemPerteneceAOtroCarrito_deberiaLanzarExcepcion() {
+        CarritoItem itemDeOtroCarrito = CarritoItem.builder()
+                .id(20L)
+                .carritoId(999L) // pertenece a otro carrito, no al id=1 que se pasa
+                .productoId(5L)
+                .cantidad(1)
+                .precioUnitario(new BigDecimal("10000"))
+                .build();
+
+        when(carritoRepository.findById(1L)).thenReturn(Optional.of(carrito));
+        when(carritoItemRepository.findById(20L)).thenReturn(Optional.of(itemDeOtroCarrito));
+
+        assertThrows(CarritoItemNotFoundException.class,
+                () -> carritoService.eliminarItem(1L, 20L));
+        verify(carritoItemRepository, never()).delete(any());
+    }
+
+    @Test
+    void eliminarItem_cuandoPerteneceAlCarritoCorrecto_deberiaEliminarlo() {
+        when(carritoRepository.findById(1L)).thenReturn(Optional.of(carrito));
+        when(carritoItemRepository.findById(20L)).thenReturn(Optional.of(item));
+        when(carritoItemRepository.findByCarritoId(1L)).thenReturn(List.of());
+
+        carritoService.eliminarItem(1L, 20L);
+
+        verify(carritoItemRepository, times(1)).delete(item);
     }
 
     @Test
