@@ -1,0 +1,19 @@
+<div style="padding: 2rem; text-align: center;">
+  <h1>Ditto Store</h1>
+
+  @if (!isLoggedIn) {
+    <button (click)="login()">Iniciar sesión</button>
+  } @else {
+    <p>Sesión iniciada como: <strong>{{ nombreUsuario }}</strong></p>
+    <button (click)="logout()">Cerrar sesión</button>
+    <br><br>
+    <button (click)="probarPerfil()">Probar /bff/perfil</button>
+
+    @if (perfilResultado) {
+      <pre style="text-align: left; max-width: 500px; margin: 1rem auto; background: #f0f0f0; padding: 1rem;">{{ perfilResultado | json }}</pre>
+    }
+    @if (perfilError) {
+      <p style="color: red;">{{ perfilError }}</p>
+    }
+  }
+</div>
