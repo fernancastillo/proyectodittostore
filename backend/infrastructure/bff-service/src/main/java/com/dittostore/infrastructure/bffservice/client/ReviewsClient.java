@@ -9,4 +9,10 @@ public interface ReviewsClient {
 
     @GetMapping("/api/reviews/producto/{productoId}")
     Object obtenerReviewsPorProducto(@PathVariable Long productoId);
+
+    @GetMapping("/api/reviews/usuario/{usuarioId}")
+    Object obtenerReviewsPorUsuario(@PathVariable Long usuarioId);
+
+    @GetMapping("/api/reviews/producto/{productoId}/promedio")
+    Double obtenerPromedioPorProducto(@PathVariable Long productoId);
 }
