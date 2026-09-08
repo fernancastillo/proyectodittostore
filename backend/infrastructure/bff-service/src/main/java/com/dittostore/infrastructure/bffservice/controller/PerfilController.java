@@ -16,13 +16,26 @@ public class PerfilController {
 
     @GetMapping("/bff/perfil")
     public Object obtenerPerfil(@AuthenticationPrincipal Jwt jwt) {
+        String nombreCompleto = jwt.getClaimAsString("name");
+        String[] partes = dividirNombre(nombreCompleto);
+
         UsuarioSyncDTO dto = new UsuarioSyncDTO(
-            jwt.getSubject(), // oid del usuario en Azure AD
-            jwt.getClaimAsString("given_name"),
-            jwt.getClaimAsString("family_name"),
+            jwt.getSubject(),
+            partes[0],
+            partes[1],
             extraerEmail(jwt)
         );
         return usuariosClient.sincronizarUsuario(dto);
+    }
+
+    private String[] dividirNombre(String nombreCompleto) {
+        if (nombreCompleto == null || nombreCompleto.isBlank()) {
+            return new String[]{"Sin nombre", "Sin apellido"};
+        }
+        String[] partes = nombreCompleto.trim().split(" ", 2);
+        String nombre = partes[0];
+        String apellido = partes.length > 1 ? partes[1] : "-";
+        return new String[]{nombre, apellido};
     }
 
     private String extraerEmail(Jwt jwt) {
@@ -31,6 +44,9 @@ public class PerfilController {
             return email;
         }
         var emails = jwt.getClaimAsStringList("emails");
-        return (emails != null && !emails.isEmpty()) ? emails.get(0) : null;
+        if (emails != null && !emails.isEmpty()) {
+            return emails.get(0);
+        }
+        return jwt.getClaimAsString("preferred_username");
     }
 }

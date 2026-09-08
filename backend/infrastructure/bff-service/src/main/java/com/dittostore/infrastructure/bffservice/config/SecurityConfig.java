@@ -24,7 +24,7 @@ public class SecurityConfig {
     @Value("${spring.security.oauth2.resourceserver.jwt.issuer-uri}")
     private String issuerUri;
 
-    private static final String EXPECTED_AUDIENCE = "api://dittostore.onmicrosoft.com/dittostore-backend";
+    private static final String EXPECTED_AUDIENCE = "81f6bac4-8a65-4233-a6b5-6dd54df03ec5";
 
     @Bean
     public JwtDecoder jwtDecoder() {
@@ -36,13 +36,12 @@ public class SecurityConfig {
                 return OAuth2TokenValidatorResult.success();
             }
             return OAuth2TokenValidatorResult.failure(
-                new OAuth2Error("invalid_token", "El audience del token no corresponde a esta API", null)
-            );
+                    new OAuth2Error("invalid_token", "El audience del token no corresponde a esta API", null));
         };
 
         OAuth2TokenValidator<Jwt> defaultValidator = JwtValidators.createDefaultWithIssuer(issuerUri);
-        OAuth2TokenValidator<Jwt> combinedValidator =
-            new DelegatingOAuth2TokenValidator<>(defaultValidator, audienceValidator);
+        OAuth2TokenValidator<Jwt> combinedValidator = new DelegatingOAuth2TokenValidator<>(defaultValidator,
+                audienceValidator);
 
         jwtDecoder.setJwtValidator(combinedValidator);
         return jwtDecoder;
@@ -64,12 +63,12 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/actuator/health").permitAll()
-                .anyRequest().authenticated()
-            )
-            .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> {}));
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/actuator/health").permitAll()
+                        .anyRequest().authenticated())
+                .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> {
+                }));
         return http.build();
     }
 }
