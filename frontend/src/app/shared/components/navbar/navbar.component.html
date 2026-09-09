@@ -38,6 +38,9 @@
           <circle cx="10" cy="20" r="1.4" fill="currentColor" />
           <circle cx="17" cy="20" r="1.4" fill="currentColor" />
         </svg>
+        @if (cart.totalItems() > 0) {
+          <span class="navbar__badge">{{ cart.totalItems() }}</span>
+        }
       </a>
 
       <a routerLink="/cuenta" class="navbar__icon-btn navbar__icon-btn--profile" aria-label="Tu cuenta">

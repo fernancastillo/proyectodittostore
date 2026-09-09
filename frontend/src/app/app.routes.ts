@@ -18,16 +18,13 @@ export const routes: Routes = [
   },
   {
     path: 'carrito',
-    loadComponent: () =>
-      import('./pages/coming-soon/coming-soon.component').then((m) => m.ComingSoonComponent),
-    data: { title: 'Tu carrito' },
+    loadComponent: () => import('./pages/cart/cart.component').then((m) => m.CartComponent),
     title: 'Ditto Store | Carrito',
   },
   {
     path: 'cuenta',
     loadComponent: () =>
-      import('./pages/coming-soon/coming-soon.component').then((m) => m.ComingSoonComponent),
-    data: { title: 'Tu cuenta' },
+      import('./pages/profile/profile.component').then((m) => m.ProfileComponent),
     title: 'Ditto Store | Cuenta',
   },
   {

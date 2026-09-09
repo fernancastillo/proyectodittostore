@@ -94,4 +94,11 @@
   width: 100%;
   padding-block: 0.6rem;
   font-size: 0.85rem;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+
+.product-card__cta--added {
+  background: var(--color-gold);
+  color: #4a3610;
+  box-shadow: none;
 }

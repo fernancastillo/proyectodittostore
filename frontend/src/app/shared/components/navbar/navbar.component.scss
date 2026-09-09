@@ -80,6 +80,7 @@
 }
 
 .navbar__icon-btn {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -94,6 +95,23 @@
   &:hover {
     background: var(--color-border);
   }
+}
+
+.navbar__badge {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  min-width: 17px;
+  height: 17px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: var(--color-gold);
+  color: #4a3610;
+  font-size: 0.65rem;
+  font-weight: 700;
+  line-height: 17px;
+  text-align: center;
+  box-shadow: 0 0 0 2px var(--color-surface);
 }
 
 .navbar__icon-btn--profile {

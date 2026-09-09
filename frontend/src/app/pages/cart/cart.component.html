@@ -1,0 +1,111 @@
+<section class="cart-page container">
+  <div class="cart-page__header">
+    <p class="cart-page__eyebrow">Tu mochila de entrenador</p>
+    <h1>Carrito de compras</h1>
+    <p class="cart-page__lead">Revisa tus cartas y cajas antes de ir a pagar.</p>
+  </div>
+
+  @if (cart.estaVacio()) {
+    <div class="cart-empty">
+      <span class="cart-empty__blob" aria-hidden="true"></span>
+      <img
+        class="cart-empty__img"
+        src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/132.png"
+        alt="Ditto confundido"
+        width="140"
+        height="140"
+      />
+      <h2>Tu carrito está vacío</h2>
+      <p>Todavía no se transforma en nada... ¡anda a buscar tus cartas favoritas!</p>
+      <a routerLink="/producto" class="btn btn--primary">Ver catálogo</a>
+    </div>
+  } @else {
+    <div class="cart-layout">
+      <div class="cart-items">
+        @for (item of cart.items$(); track item.product.id) {
+          <article class="cart-item">
+            <div class="cart-item__media">
+              <img [src]="item.product.imagen" [alt]="item.product.nombre" loading="lazy" />
+            </div>
+
+            <div class="cart-item__info">
+              <p class="cart-item__name">{{ item.product.nombre }}</p>
+              @if (item.product.setNombre) {
+                <p class="cart-item__set">Set: {{ item.product.setNombre }}</p>
+              }
+              @if (item.product.rareza) {
+                <span class="cart-item__badge">{{ item.product.rareza }}</span>
+              }
+              <button
+                type="button"
+                class="cart-item__remove"
+                (click)="eliminar(item.product.id)"
+                [attr.aria-label]="'Quitar ' + item.product.nombre + ' del carrito'"
+              >
+                Quitar
+              </button>
+            </div>
+
+            <div class="cart-item__qty">
+              <button
+                type="button"
+                class="cart-item__qty-btn"
+                (click)="decrementar(item.product.id)"
+                aria-label="Restar unidad"
+              >
+                −
+              </button>
+              <span class="cart-item__qty-value">{{ item.cantidad }}</span>
+              <button
+                type="button"
+                class="cart-item__qty-btn"
+                (click)="incrementar(item.product.id)"
+                aria-label="Sumar unidad"
+              >
+                +
+              </button>
+            </div>
+
+            <p class="cart-item__price">
+              {{ item.product.precio * item.cantidad | currency: 'CLP' : 'symbol-narrow' : '1.0-0' }}
+            </p>
+          </article>
+        }
+
+        <button type="button" class="cart-items__clear" (click)="vaciarCarrito()">
+          Vaciar carrito
+        </button>
+      </div>
+
+      <aside class="cart-summary">
+        <h2>Resumen del pedido</h2>
+
+        <div class="cart-summary__row">
+          <span>Subtotal</span>
+          <span>{{ cart.subtotal() | currency: 'CLP' : 'symbol-narrow' : '1.0-0' }}</span>
+        </div>
+
+        <div class="cart-summary__row">
+          <span>Envío</span>
+          <span>{{ envio === 0 ? 'Gratis' : (envio | currency: 'CLP' : 'symbol-narrow' : '1.0-0') }}</span>
+        </div>
+
+        @if (faltaParaEnvioGratis > 0) {
+          <p class="cart-summary__hint">
+            Te faltan {{ faltaParaEnvioGratis | currency: 'CLP' : 'symbol-narrow' : '1.0-0' }} para envío gratis 🎉
+          </p>
+        }
+
+        <div class="cart-summary__divider" aria-hidden="true"></div>
+
+        <div class="cart-summary__row cart-summary__row--total">
+          <span>Total</span>
+          <span>{{ total | currency: 'CLP' : 'symbol-narrow' : '1.0-0' }}</span>
+        </div>
+
+        <button type="button" class="btn btn--primary cart-summary__cta">Continuar compra</button>
+        <a routerLink="/producto" class="cart-summary__continue">Seguir comprando</a>
+      </aside>
+    </div>
+  }
+</section>

@@ -1,5 +1,6 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import { CartService } from '../../../core/services/cart.service';
 
 interface NavLink {
   label: string;
@@ -15,6 +16,8 @@ interface NavLink {
   styleUrl: './navbar.component.scss',
 })
 export class NavbarComponent {
+  readonly cart = inject(CartService);
+
   readonly links: NavLink[] = [
     { label: 'Inicio', path: '/', exact: true },
     { label: 'Cajas', path: '/cajas' },
