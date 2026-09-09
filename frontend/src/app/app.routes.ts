@@ -22,6 +22,12 @@ export const routes: Routes = [
     title: 'Ditto Store | Carrito',
   },
   {
+    path: 'pago',
+    loadComponent: () =>
+      import('./pages/checkout/checkout.component').then((m) => m.CheckoutComponent),
+    title: 'Ditto Store | Pago',
+  },
+  {
     path: 'cuenta',
     loadComponent: () =>
       import('./pages/profile/profile.component').then((m) => m.ProfileComponent),

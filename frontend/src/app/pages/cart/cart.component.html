@@ -103,7 +103,9 @@
           <span>{{ total | currency: 'CLP' : 'symbol-narrow' : '1.0-0' }}</span>
         </div>
 
-        <button type="button" class="btn btn--primary cart-summary__cta">Continuar compra</button>
+        <button type="button" class="btn btn--primary cart-summary__cta" routerLink="/pago">
+          Continuar compra
+        </button>
         <a routerLink="/producto" class="cart-summary__continue">Seguir comprando</a>
       </aside>
     </div>

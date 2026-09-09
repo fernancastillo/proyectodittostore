@@ -104,7 +104,10 @@
 
           <label class="profile-form__field profile-form__field--full">
             <span>Correo</span>
-            <input type="email" name="email" [(ngModel)]="draft.email" required />
+            <input type="email" name="email" [ngModel]="draft.email" disabled readonly />
+            <small class="profile-form__hint">
+              El correo no se puede modificar: el acceso está ligado a tu cuenta de Microsoft/Azure.
+            </small>
           </label>
 
           <label class="profile-form__field">

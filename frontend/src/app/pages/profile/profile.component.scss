@@ -249,6 +249,12 @@
       outline-offset: 1px;
       border-color: var(--color-primary-light);
     }
+
+    &:disabled {
+      background: var(--color-border);
+      color: var(--color-ink-soft);
+      cursor: not-allowed;
+    }
   }
 }
 
@@ -256,6 +262,12 @@
   @media (min-width: 640px) {
     grid-column: 1 / -1;
   }
+}
+
+.profile-form__hint {
+  font-weight: 500;
+  color: var(--color-ink-soft);
+  font-size: 0.75rem;
 }
 
 .profile-form__actions {
