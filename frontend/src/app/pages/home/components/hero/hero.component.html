@@ -1,0 +1,304 @@
+
+<section class="hero">
+
+  <div class="container hero__grid">
+
+    <!-- =========================
+         COLUMNA IZQUIERDA: TEXTO
+         ========================= -->
+    <div class="hero__copy">
+
+
+      <!-- TÍTULO PRINCIPAL -->
+      <h1>
+        Cada carta que buscas,
+        <span class="highlight">en la forma que menos esperas.</span>
+      </h1>
+
+      <!-- DESCRIPCIÓN -->
+      <p class="hero__subtitle">
+        Sobres, colecciones y piezas sueltas del universo Pokémon TCG,
+        elegidas para quienes arman su vitrina carta por carta.
+      </p>
+
+      <!-- =========================
+           ESTADÍSTICAS
+           ========================= -->
+      <div class="hero__stats">
+
+        <div class="hero__stat">
+          <strong>1.200+</strong>
+          <span>cartas disponibles</span>
+        </div>
+
+        <div class="hero__stat-divider"></div>
+
+        <div class="hero__stat">
+          <strong>4.9 ★</strong>
+          <span>valoración de clientes</span>
+        </div>
+
+        <div class="hero__stat-divider"></div>
+
+        <div class="hero__stat">
+          <strong>24–48h</strong>
+          <span>despacho a todo Chile</span>
+        </div>
+
+      </div>
+
+      <!-- =========================
+           BOTONES
+           ========================= -->
+      <div class="hero__actions">
+
+        <a
+          routerLink="/producto"
+          class="btn btn--primary"
+        >
+          Ver catálogo
+        </a>
+
+        <a
+          routerLink="/contacto"
+          class="btn btn--ghost"
+        >
+          Hablar con nosotros
+        </a>
+
+      </div>
+
+    </div>
+
+
+    <!-- =========================
+         COLUMNA DERECHA: CARTA
+         ========================= -->
+    <div class="hero__stage">
+
+      <!-- Brillo decorativo detrás -->
+      <div class="hero__glow"></div>
+
+
+      <!-- =========================
+           POKÉ BALL DE FONDO
+           ========================= -->
+      <img
+        class="hero__pokeball-bg"
+        src="assets/images/pokeball2.png"
+        alt=""
+        aria-hidden="true"
+      />
+
+
+      <!-- =========================
+           CARTA DINÁMICA
+           ========================= -->
+      <div class="hero__card-frame">
+
+        @if (heroCard(); as card) {
+
+          <img
+            class="hero__card"
+            [class.hero__card--flip]="flipping()"
+            [src]="card.imagen"
+            [alt]="card.nombre"
+          />
+
+        } @else if (loading()) {
+
+          <div
+            class="hero__card hero__card--placeholder"
+            aria-hidden="true">
+          </div>
+
+        } @else {
+
+          <div
+            class="hero__card hero__card--placeholder"
+            aria-hidden="true">
+          </div>
+
+        }
+
+      </div>
+
+
+      <!-- =========================
+           CHIP SUPERIOR
+           ========================= -->
+      <div class="hero__chip hero__chip--trend">
+
+        <span>🔥</span>
+
+        <div>
+          <small>Ahora</small>
+          <strong>Tendencia</strong>
+        </div>
+
+      </div>
+
+
+      <!-- =========================
+           CHIP INFERIOR
+           ========================= -->
+      <div class="hero__chip hero__chip--price">
+
+        <span>✨</span>
+
+        <div>
+          <small>Descubre</small>
+          <strong>Nuevas cartas</strong>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- ==================================================
+       CARRUSEL DE PRODUCTOS / TENDENCIAS
+       ================================================== -->
+  <div class="hero__strip">
+
+    <p class="hero__strip-label container">
+      Tendencias en la tienda
+    </p>
+
+
+    <div class="hero__strip-viewport">
+
+      <!-- =========================
+           CARGANDO
+           ========================= -->
+      @if (quickLoading()) {
+
+        <div class="hero__strip-track hero__strip-track--static">
+
+          @for (i of [1, 2, 3, 4, 5]; track i) {
+
+            <div class="hero__strip-skeleton"></div>
+
+          }
+
+        </div>
+
+      } @else {
+
+        <!-- ==================================================
+             PRIMERA PISTA
+             ================================================== -->
+        <div class="hero__strip-track">
+
+          @for (
+            product of quickProducts();
+            track product.id;
+            let i = $index
+          ) {
+
+            <a
+              routerLink="/producto"
+              class="hero__strip-item"
+            >
+
+              <!-- Badge de tendencia -->
+              @if (i % 3 === 1) {
+
+                <span class="hero__strip-badge">
+                  🔥 Tendencia
+                </span>
+
+              }
+
+              <!-- Imagen -->
+              <img
+                [src]="product.imagen"
+                [alt]="product.nombre"
+                loading="lazy"
+              />
+
+              <!-- Nombre -->
+              <p class="hero__strip-name">
+                {{ product.nombre }}
+              </p>
+
+              <!-- Precio -->
+              <p class="hero__strip-price">
+                {{
+                  product.precio
+                    | currency: 'CLP' : 'symbol-narrow' : '1.0-0'
+                }}
+              </p>
+
+            </a>
+
+          }
+
+        </div>
+
+
+        <!-- ==================================================
+             SEGUNDA PISTA
+             Se duplica para crear el movimiento infinito
+             ================================================== -->
+        <div
+          class="hero__strip-track"
+          aria-hidden="true"
+        >
+
+          @for (
+            product of quickProducts();
+            track product.id;
+            let i = $index
+          ) {
+
+            <a
+              routerLink="/producto"
+              class="hero__strip-item"
+              tabindex="-1"
+            >
+
+              <!-- Badge de tendencia -->
+              @if (i % 3 === 1) {
+
+                <span class="hero__strip-badge">
+                  🔥 Tendencia
+                </span>
+
+              }
+
+              <!-- Imagen -->
+              <img
+                [src]="product.imagen"
+                [alt]="product.nombre"
+                loading="lazy"
+              />
+
+              <!-- Nombre -->
+              <p class="hero__strip-name">
+                {{ product.nombre }}
+              </p>
+
+              <!-- Precio -->
+              <p class="hero__strip-price">
+                {{
+                  product.precio
+                    | currency: 'CLP' : 'symbol-narrow' : '1.0-0'
+                }}
+              </p>
+
+            </a>
+
+          }
+
+        </div>
+
+      }
+
+    </div>
+
+  </div>
+
+</section>

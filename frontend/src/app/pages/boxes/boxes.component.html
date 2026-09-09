@@ -1,0 +1,28 @@
+<section class="boxes-page container">
+  <div class="boxes-page__header">
+    <p class="boxes-page__eyebrow">Sellado de fábrica</p>
+    <h1>Cajas de sobres Pokémon</h1>
+    <p class="boxes-page__lead">
+      Booster boxes, Elite Trainer Boxes y Booster Bundles de los sets más recientes.
+      Todas las cajas llegan selladas y sin abrir.
+    </p>
+  </div>
+
+  @if (loading()) {
+    <div class="boxes-page__grid">
+      @for (i of [1, 2, 3, 4, 5, 6, 7, 8]; track i) {
+        <div class="boxes-page__skeleton"></div>
+      }
+    </div>
+  } @else if (errored()) {
+    <p class="boxes-page__empty">
+      No pudimos cargar las cajas en este momento. Intenta nuevamente más tarde.
+    </p>
+  } @else {
+    <div class="boxes-page__grid">
+      @for (box of boxes(); track box.id) {
+        <app-product-card [product]="box"></app-product-card>
+      }
+    </div>
+  }
+</section>

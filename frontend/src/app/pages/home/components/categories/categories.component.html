@@ -1,0 +1,18 @@
+<section class="categories container">
+  <div class="section-heading">
+    <div>
+      <h2>Explora por categoría</h2>
+      <p>Tres formas de encontrar lo que buscas, según cómo te guste coleccionar.</p>
+    </div>
+  </div>
+
+  <div class="categories__grid">
+    @for (category of categories; track category.title) {
+      <a routerLink="/producto" class="categories__card">
+        <img [src]="category.logo" [alt]="category.title" class="categories__logo" loading="lazy" />
+        <h3>{{ category.title }}</h3>
+        <p>{{ category.description }}</p>
+      </a>
+    }
+  </div>
+</section>

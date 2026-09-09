@@ -1,0 +1,27 @@
+<section class="boxes container">
+  <div class="section-heading">
+    <div>
+      <h2>Cajas de sobres</h2>
+      <p>Cajas selladas directo de fábrica: ideales para abrir en vivo o completar tu colección de un golpe.</p>
+    </div>
+    <a routerLink="/cajas" class="btn btn--ghost">Ver todas</a>
+  </div>
+
+  @if (loading()) {
+    <div class="boxes__grid">
+      @for (i of [1, 2, 3, 4]; track i) {
+        <div class="boxes__skeleton"></div>
+      }
+    </div>
+  } @else if (errored()) {
+    <p class="boxes__empty">
+      No pudimos cargar las cajas en este momento. Intenta nuevamente más tarde.
+    </p>
+  } @else {
+    <div class="boxes__grid">
+      @for (box of boxes(); track box.id) {
+        <app-product-card [product]="box"></app-product-card>
+      }
+    </div>
+  }
+</section>
