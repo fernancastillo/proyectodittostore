@@ -67,15 +67,86 @@ public class CarritoServiceImpl implements CarritoService {
         Carrito carrito = carritoRepository.findById(carritoId)
                 .orElseThrow(() -> new CarritoNotFoundException(carritoId));
 
-        CarritoItem item = CarritoItem.builder()
-                .carritoId(carrito.getId())
-                .productoId(itemDTO.getProductoId())
-                .cantidad(itemDTO.getCantidad())
-                .precioUnitario(itemDTO.getPrecioUnitario())
-                .build();
+        CarritoItem itemExistente = carritoItemRepository.findByCarritoId(carritoId).stream()
+                .filter(i -> i.getProductoId().equals(itemDTO.getProductoId()))
+                .findFirst()
+                .orElse(null);
+
+        if (itemExistente != null) {
+            itemExistente.setCantidad(itemExistente.getCantidad() + itemDTO.getCantidad());
+            itemExistente.setPrecioUnitario(itemDTO.getPrecioUnitario());
+            carritoItemRepository.save(itemExistente);
+        } else {
+            CarritoItem item = CarritoItem.builder()
+                    .carritoId(carrito.getId())
+                    .productoId(itemDTO.getProductoId())
+                    .cantidad(itemDTO.getCantidad())
+                    .precioUnitario(itemDTO.getPrecioUnitario())
+                    .build();
+            carritoItemRepository.save(item);
+        }
+
+        return toResponseDTO(carrito);
+    }
+
+    @Override
+    @Transactional
+    public CarritoResponseDTO obtenerOCrearActivoPorUsuario(Long usuarioId) {
+        Carrito carrito = carritoRepository.findByUsuarioIdAndEstado(usuarioId, EstadoCarrito.ACTIVO)
+                .orElseGet(() -> carritoRepository.save(Carrito.builder()
+                        .usuarioId(usuarioId)
+                        .estado(EstadoCarrito.ACTIVO)
+                        .fechaCreacion(LocalDateTime.now())
+                        .build()));
+        return toResponseDTO(carrito);
+    }
+
+    @Override
+    @Transactional
+    public CarritoResponseDTO incrementarItem(Long carritoId, Long itemId) {
+        Carrito carrito = carritoRepository.findById(carritoId)
+                .orElseThrow(() -> new CarritoNotFoundException(carritoId));
+
+        CarritoItem item = obtenerItemDeCarrito(carritoId, itemId);
+        item.setCantidad(item.getCantidad() + 1);
         carritoItemRepository.save(item);
 
         return toResponseDTO(carrito);
+    }
+
+    @Override
+    @Transactional
+    public CarritoResponseDTO decrementarItem(Long carritoId, Long itemId) {
+        Carrito carrito = carritoRepository.findById(carritoId)
+                .orElseThrow(() -> new CarritoNotFoundException(carritoId));
+
+        CarritoItem item = obtenerItemDeCarrito(carritoId, itemId);
+        if (item.getCantidad() <= 1) {
+            carritoItemRepository.delete(item);
+        } else {
+            item.setCantidad(item.getCantidad() - 1);
+            carritoItemRepository.save(item);
+        }
+
+        return toResponseDTO(carrito);
+    }
+
+    @Override
+    @Transactional
+    public CarritoResponseDTO vaciarItems(Long carritoId) {
+        Carrito carrito = carritoRepository.findById(carritoId)
+                .orElseThrow(() -> new CarritoNotFoundException(carritoId));
+        carritoItemRepository.deleteByCarritoId(carritoId);
+        return toResponseDTO(carrito);
+    }
+
+    private CarritoItem obtenerItemDeCarrito(Long carritoId, Long itemId) {
+        CarritoItem item = carritoItemRepository.findById(itemId)
+                .orElseThrow(() -> new CarritoItemNotFoundException(itemId));
+        if (!item.getCarritoId().equals(carritoId)) {
+            throw new CarritoItemNotFoundException(itemId);
+        }
+        return item;
     }
 
     @Override
