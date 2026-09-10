@@ -1,4 +1,6 @@
 import { Routes } from '@angular/router';
+import { MsalGuard } from '@azure/msal-angular';
+import { roleGuard } from './core/guards/role.guard';
 
 export const routes: Routes = [
   {
@@ -39,9 +41,10 @@ export const routes: Routes = [
       import('./pages/contact/contact.component').then((m) => m.ContactComponent),
     title: 'Ditto Store | Contacto',
   },
-  { path: '**', redirectTo: '' },
+  {
     path: 'admin',
     canActivate: [MsalGuard, roleGuard('ADMIN')],
-    loadChildren: () => import('./features/admin/admin.routes').then(m => m.ADMIN_ROUTES)
-  }
+    loadChildren: () => import('./features/admin/admin.routes').then((m) => m.ADMIN_ROUTES),
+  },
+  { path: '**', redirectTo: '' },
 ];
