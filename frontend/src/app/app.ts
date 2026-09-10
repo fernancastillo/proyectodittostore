@@ -24,7 +24,7 @@ export class App implements OnInit {
         if (result?.account) {
           this.msalService.instance.setActiveAccount(result.account);
         }
-        this.redirigirSiEsAdmin();
+        this.redirigirSegunRol();
       },
       error: (error) => console.error('Error procesando el redirect:', error)
     });
@@ -32,11 +32,11 @@ export class App implements OnInit {
     this.msalBroadcastService.inProgress$
       .pipe(filter((status) => status === InteractionStatus.None))
       .subscribe(() => {
-        this.redirigirSiEsAdmin();
+        this.redirigirSegunRol();
       });
   }
 
-  private redirigirSiEsAdmin(): void {
+  private redirigirSegunRol(): void {
     const cuentas = this.msalService.instance.getAllAccounts();
     if (cuentas.length === 0) {
       return;
@@ -46,6 +46,8 @@ export class App implements OnInit {
       next: (perfil) => {
         if (perfil.rol === 'ADMIN') {
           this.router.navigateByUrl('/admin');
+        } else {
+          this.router.navigateByUrl('/cliente');
         }
       },
       error: (err) => console.error('Error cargando perfil:', err)

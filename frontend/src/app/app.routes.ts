@@ -40,4 +40,8 @@ export const routes: Routes = [
     title: 'Ditto Store | Contacto',
   },
   { path: '**', redirectTo: '' },
+    path: 'admin',
+    canActivate: [MsalGuard, roleGuard('ADMIN')],
+    loadChildren: () => import('./features/admin/admin.routes').then(m => m.ADMIN_ROUTES)
+  }
 ];

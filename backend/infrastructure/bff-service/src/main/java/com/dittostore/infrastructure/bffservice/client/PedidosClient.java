@@ -7,6 +7,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 @FeignClient(name = "pedidos-service")
 public interface PedidosClient {
 
+    @GetMapping("/api/pedidos")
+    Object obtenerTodos();
+
     @GetMapping("/api/pedidos/usuario/{usuarioId}")
     Object obtenerPedidosPorUsuario(@PathVariable Long usuarioId);
 }
