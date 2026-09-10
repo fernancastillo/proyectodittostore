@@ -1,11 +1,23 @@
 import { Routes } from '@angular/router';
 import { MsalGuard } from '@azure/msal-angular';
 import { roleGuard } from './core/guards/role.guard';
+import { ClienteLayout } from './features/cliente/layout/cliente-layout';
 
 export const routes: Routes = [
   {
     path: '',
-    loadComponent: () => import('./home/home').then(m => m.Home)
+    component: ClienteLayout,
+    children: [
+      { path: '', loadComponent: () => import('./home/home').then(m => m.Home) },
+      { path: 'productos', loadComponent: () => import('./features/cliente/productos/productos').then(m => m.Productos) },
+      { path: 'contacto', loadComponent: () => import('./features/cliente/contacto/contacto').then(m => m.Contacto) },
+      { path: 'carrito', loadComponent: () => import('./features/cliente/carrito/carrito').then(m => m.Carrito) },
+      {
+        path: 'perfil',
+        canActivate: [MsalGuard],
+        loadComponent: () => import('./features/cliente/perfil/perfil').then(m => m.Perfil)
+      }
+    ]
   },
   {
     path: 'admin',

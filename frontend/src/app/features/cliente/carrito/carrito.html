@@ -1,0 +1,27 @@
+<section class="featured-section">
+  <h3 class="section-title">Tu carrito</h3>
+
+  <div style="max-width: 700px; margin: 0 auto;">
+    @for (producto of carritoService.listaItems(); track $index) {
+      <div style="display:flex; align-items:center; justify-content:space-between; background:white; border-radius:8px; padding:1rem; margin-bottom:1rem; box-shadow:0 2px 4px rgba(0,0,0,0.05);">
+        <div style="display:flex; align-items:center; gap:1rem;">
+          <img [src]="producto.imagenUrl" [alt]="producto.nombre" style="width:60px; height:60px; object-fit:cover; border-radius:6px;">
+          <div>
+            <p class="product-name" style="margin:0;">{{ producto.nombre }}</p>
+            <p class="product-price" style="margin:0;">${{ producto.precio | number:'1.0-0' }}</p>
+          </div>
+        </div>
+        <button class="btn btn-secondary" (click)="quitar($index)">Quitar</button>
+      </div>
+    } @empty {
+      <p style="text-align:center;">Tu carrito está vacío.</p>
+    }
+
+    @if (carritoService.cantidad() > 0) {
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-top:1.5rem;">
+        <p class="product-price">Total: ${{ total | number:'1.0-0' }}</p>
+        <button class="btn btn-primary" (click)="vaciar()">Vaciar carrito</button>
+      </div>
+    }
+  </div>
+</section>

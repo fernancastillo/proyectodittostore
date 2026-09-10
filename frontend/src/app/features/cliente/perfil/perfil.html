@@ -1,0 +1,14 @@
+<section class="featured-section">
+  <h3 class="section-title">Mi perfil</h3>
+
+  @if (perfil(); as p) {
+    <div style="max-width: 500px; margin: 0 auto; background:white; border-radius:8px; padding:2rem; box-shadow:0 4px 6px rgba(0,0,0,0.05);">
+      <p><strong>Nombre:</strong> {{ p.nombre }} {{ p.apellido }}</p>
+      <p><strong>Email:</strong> {{ p.email }}</p>
+      <p><strong>Teléfono:</strong> {{ p.telefono || 'No registrado' }}</p>
+      <p><strong>Dirección:</strong> {{ p.direccion || 'No registrada' }}</p>
+    </div>
+  } @else {
+    <p style="text-align:center;">Cargando perfil...</p>
+  }
+</section>
