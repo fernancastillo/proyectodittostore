@@ -1,0 +1,185 @@
+<section class="checkout-page container">
+  @if (pedidoConfirmado(); as pedido) {
+    <div class="checkout-success">
+      <span class="checkout-success__blob" aria-hidden="true"></span>
+      <img
+        class="checkout-success__img"
+        src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/132.png"
+        alt="Ditto feliz"
+        width="120"
+        height="120"
+      />
+      <p class="checkout-success__eyebrow">¡Pago exitoso!</p>
+      <h1>Pedido {{ pedido.id }}</h1>
+      <p class="checkout-success__lead">
+        Pagaste con {{ pedido.metodoPago === 'paypal' ? 'PayPal' : 'Tarjeta Ditto' }}. Te
+        contactaremos para coordinar el despacho.
+      </p>
+
+      <div class="checkout-success__total">
+        Total pagado
+        <strong>{{ pedido.total | currency: 'CLP' : 'symbol-narrow' : '1.0-0' }}</strong>
+      </div>
+
+      <div class="checkout-success__actions">
+        <a routerLink="/producto" class="btn btn--ghost">Seguir comprando</a>
+        <button type="button" class="btn btn--primary" (click)="volverAlInicio()">
+          Volver al inicio
+        </button>
+      </div>
+    </div>
+  } @else if (cart.estaVacio()) {
+    <div class="checkout-empty">
+      <p>Tu carrito está vacío, no hay nada que pagar todavía.</p>
+      <a routerLink="/producto" class="btn btn--primary">Ver catálogo</a>
+    </div>
+  } @else {
+    <div class="checkout-page__header">
+      <p class="checkout-page__eyebrow">Último paso</p>
+      <h1>Finalizar compra</h1>
+      <p class="checkout-page__lead">Elige tu método de pago para completar el pedido.</p>
+    </div>
+
+    <div class="checkout-layout">
+      <div class="checkout-payment">
+        <div class="checkout-tabs" role="tablist" aria-label="Método de pago">
+          <button
+            type="button"
+            role="tab"
+            class="checkout-tab"
+            [class.checkout-tab--active]="metodo() === 'paypal'"
+            [attr.aria-selected]="metodo() === 'paypal'"
+            (click)="cambiarMetodo('paypal')"
+          >
+            PayPal
+          </button>
+          <button
+            type="button"
+            role="tab"
+            class="checkout-tab"
+            [class.checkout-tab--active]="metodo() === 'tarjeta'"
+            [attr.aria-selected]="metodo() === 'tarjeta'"
+            (click)="cambiarMetodo('tarjeta')"
+          >
+            Tarjeta Ditto
+          </button>
+        </div>
+
+        @if (metodo() === 'paypal') {
+          <div class="checkout-panel">
+            <p class="checkout-panel__hint">
+              Serás redirigido a PayPal para confirmar el pago de forma segura.
+            </p>
+
+            @if (paypalError()) {
+              <p class="checkout-panel__error">
+                No pudimos cargar PayPal en este momento. Intenta con la Tarjeta Ditto o
+                recarga la página.
+              </p>
+            } @else {
+              @if (!paypalListo()) {
+                <div class="checkout-panel__loading">Cargando botón de PayPal…</div>
+              }
+              <div #paypalContainer class="checkout-panel__paypal"></div>
+            }
+          </div>
+        } @else {
+          <form class="checkout-panel checkout-card-form" (ngSubmit)="pagarConTarjetaDitto()">
+            <p class="checkout-panel__hint">
+              Tarjeta imaginaria de Ditto Store, solo para simular el pago dentro de esta demo.
+            </p>
+
+            <label class="checkout-card-form__field">
+              <span>Número de tarjeta</span>
+              <input
+                type="text"
+                inputmode="numeric"
+                maxlength="19"
+                placeholder="4242 4242 4242 4242"
+                name="numero"
+                [(ngModel)]="tarjeta.numero"
+                required
+              />
+            </label>
+
+            <label class="checkout-card-form__field">
+              <span>Nombre en la tarjeta</span>
+              <input
+                type="text"
+                placeholder="Como aparece en la tarjeta"
+                name="nombre"
+                [(ngModel)]="tarjeta.nombre"
+                required
+              />
+            </label>
+
+            <div class="checkout-card-form__row">
+              <label class="checkout-card-form__field">
+                <span>Vencimiento</span>
+                <input
+                  type="text"
+                  placeholder="MM/AA"
+                  maxlength="5"
+                  name="vencimiento"
+                  [(ngModel)]="tarjeta.vencimiento"
+                  required
+                />
+              </label>
+
+              <label class="checkout-card-form__field">
+                <span>CVV</span>
+                <input
+                  type="text"
+                  inputmode="numeric"
+                  maxlength="4"
+                  placeholder="123"
+                  name="cvv"
+                  [(ngModel)]="tarjeta.cvv"
+                  required
+                />
+              </label>
+            </div>
+
+            <button type="submit" class="btn btn--primary checkout-card-form__submit" [disabled]="procesando()">
+              {{ procesando() ? 'Procesando pago…' : ('Pagar ' + (total | currency: 'CLP' : 'symbol-narrow' : '1.0-0')) }}
+            </button>
+          </form>
+        }
+      </div>
+
+      <aside class="checkout-summary">
+        <h2>Tu pedido</h2>
+
+        <div class="checkout-summary__items">
+          @for (item of items; track item.product.id) {
+            <div class="checkout-summary__item">
+              <img [src]="item.product.imagen" [alt]="item.product.nombre" loading="lazy" />
+              <div class="checkout-summary__item-info">
+                <p>{{ item.product.nombre }}</p>
+                <span>x{{ item.cantidad }}</span>
+              </div>
+              <p class="checkout-summary__item-price">
+                {{ item.product.precio * item.cantidad | currency: 'CLP' : 'symbol-narrow' : '1.0-0' }}
+              </p>
+            </div>
+          }
+        </div>
+
+        <div class="checkout-summary__divider" aria-hidden="true"></div>
+
+        <div class="checkout-summary__row">
+          <span>Subtotal</span>
+          <span>{{ subtotal | currency: 'CLP' : 'symbol-narrow' : '1.0-0' }}</span>
+        </div>
+        <div class="checkout-summary__row">
+          <span>Envío</span>
+          <span>{{ envio === 0 ? 'Gratis' : (envio | currency: 'CLP' : 'symbol-narrow' : '1.0-0') }}</span>
+        </div>
+        <div class="checkout-summary__row checkout-summary__row--total">
+          <span>Total</span>
+          <span>{{ total | currency: 'CLP' : 'symbol-narrow' : '1.0-0' }}</span>
+        </div>
+      </aside>
+    </div>
+  }
+</section>

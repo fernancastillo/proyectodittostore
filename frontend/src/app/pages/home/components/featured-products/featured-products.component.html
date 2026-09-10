@@ -1,0 +1,27 @@
+<section class="featured container">
+  <div class="section-heading">
+    <div>
+      <h2>Cartas destacadas</h2>
+      <p>Presiona la imagen de una carta para ver su descripción antes de añadirla al carrito.</p>
+    </div>
+    <a routerLink="/producto" class="btn btn--ghost">Ver todo</a>
+  </div>
+
+  @if (loading()) {
+    <div class="featured__grid">
+      @for (i of [1, 2, 3, 4]; track i) {
+        <div class="featured__skeleton"></div>
+      }
+    </div>
+  } @else if (errored()) {
+    <p class="featured__empty">
+      No pudimos cargar las cartas en este momento. Intenta nuevamente más tarde.
+    </p>
+  } @else {
+    <div class="featured__grid">
+      @for (product of products(); track product.id) {
+        <app-product-card [product]="product"></app-product-card>
+      }
+    </div>
+  }
+</section>

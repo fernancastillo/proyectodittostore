@@ -1,0 +1,22 @@
+:host {
+  display: block;
+}
+
+.app-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-bg);
+
+  @media (min-width: 900px) {
+    margin: 1.25rem;
+    border: 2px solid var(--color-primary-light);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    min-height: calc(100vh - 2.5rem);
+  }
+}
+
+.app-shell__main {
+  flex: 1;
+}

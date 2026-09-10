@@ -1,0 +1,40 @@
+.boxes {
+  padding-block: clamp(2rem, 5vw, 3.5rem);
+}
+
+.boxes__grid {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(2, 1fr);
+
+  @media (min-width: 640px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @media (min-width: 1000px) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.boxes__skeleton {
+  aspect-ratio: 3 / 4.4;
+  border-radius: var(--radius-md);
+  background: linear-gradient(90deg, var(--color-border) 25%, #f6f2ff 50%, var(--color-border) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.boxes__empty {
+  color: var(--color-ink-soft);
+  text-align: center;
+  padding: 2rem 0;
+}

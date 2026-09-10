@@ -1,0 +1,87 @@
+<section class="catalog container">
+  <div class="catalog__header">
+    <p class="catalog__eyebrow">Catálogo completo</p>
+    <h1>Todos los productos</h1>
+    <p class="catalog__lead">Cartas individuales y cajas selladas, todo en un solo lugar.</p>
+  </div>
+
+  <div class="catalog__toolbar">
+    <label class="catalog__search">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true">
+        <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2" />
+        <line x1="16.5" y1="16.5" x2="21" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+      </svg>
+      <input
+        type="search"
+        placeholder="Buscar por nombre o set…"
+        [ngModel]="busqueda()"
+        (ngModelChange)="setBusqueda($event)"
+        aria-label="Buscar productos"
+      />
+    </label>
+
+    <select
+      class="catalog__select"
+      [ngModel]="orden()"
+      (ngModelChange)="setOrden($event)"
+      aria-label="Ordenar productos"
+    >
+      @for (o of ordenes; track o.valor) {
+        <option [value]="o.valor">{{ o.label }}</option>
+      }
+    </select>
+  </div>
+
+  <div class="catalog__filters" role="tablist" aria-label="Filtrar por tipo de producto">
+    @for (f of filtros; track f.valor) {
+      <button
+        type="button"
+        role="tab"
+        class="catalog__filter"
+        [class.catalog__filter--active]="filtro() === f.valor"
+        [attr.aria-selected]="filtro() === f.valor"
+        (click)="setFiltro(f.valor)"
+      >
+        {{ f.label }}
+      </button>
+    }
+  </div>
+
+  @if (rarezasDisponibles().length > 0) {
+    <div class="catalog__filters catalog__filters--rareza" role="group" aria-label="Filtrar por rareza">
+      @for (r of rarezasDisponibles(); track r) {
+        <button
+          type="button"
+          class="catalog__chip"
+          [class.catalog__chip--active]="rareza() === r"
+          (click)="setRareza(r)"
+        >
+          {{ r }}
+        </button>
+      }
+    </div>
+  }
+
+  @if (loading()) {
+    <div class="catalog__grid">
+      @for (i of [1, 2, 3, 4, 5, 6, 7, 8]; track i) {
+        <div class="catalog__skeleton"></div>
+      }
+    </div>
+  } @else if (errored()) {
+    <p class="catalog__empty">
+      No pudimos cargar el catálogo en este momento. Intenta nuevamente más tarde.
+    </p>
+  } @else if (products().length === 0) {
+    <div class="catalog__empty">
+      <p>No encontramos productos para estos filtros.</p>
+      <button type="button" class="btn btn--ghost" (click)="limpiarFiltros()">Limpiar filtros</button>
+    </div>
+  } @else {
+    <div class="catalog__grid">
+      @for (product of products(); track product.id) {
+        <app-product-card [product]="product"></app-product-card>
+      }
+    </div>
+  }
+</section>

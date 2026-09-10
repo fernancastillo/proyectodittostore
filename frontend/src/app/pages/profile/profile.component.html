@@ -1,0 +1,131 @@
+<section class="profile-page container">
+  <div class="profile-page__header">
+    <p class="profile-page__eyebrow">Tu entrenador</p>
+    <h1>Mi cuenta</h1>
+    <p class="profile-page__lead">Administra tus datos y revisa tu actividad en Ditto Store.</p>
+  </div>
+
+  <div class="profile-hero">
+    <span class="profile-hero__blob" aria-hidden="true"></span>
+
+    <div class="profile-hero__avatar">
+      <img
+        src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/132.png"
+        alt="Avatar Ditto"
+        width="88"
+        height="88"
+      />
+      <span class="profile-hero__avatar-tag">{{ iniciales }}</span>
+    </div>
+
+    <div class="profile-hero__text">
+      <h2>{{ perfil.nombre }} {{ perfil.apellido }}</h2>
+      <p>{{ perfil.email }}</p>
+    </div>
+
+    @if (!editando()) {
+      <button type="button" class="btn btn--ghost profile-hero__edit" (click)="activarEdicion()">
+        Editar perfil
+      </button>
+    }
+  </div>
+
+  <div class="profile-stats">
+    @for (stat of stats; track stat.label) {
+      <div class="profile-stat">
+        <span class="profile-stat__icon">
+          @switch (stat.icon) {
+            @case ('orders') {
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" aria-hidden="true">
+                <path d="M3 4h2l2.2 11.2a2 2 0 0 0 2 1.6h7.6a2 2 0 0 0 2-1.6L21 8H6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                <circle cx="10" cy="20" r="1.4" fill="currentColor" />
+                <circle cx="17" cy="20" r="1.4" fill="currentColor" />
+              </svg>
+            }
+            @case ('favorites') {
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" aria-hidden="true">
+                <path d="M12 20s-7-4.35-9.5-8.6C1 8.2 2.7 5 6 5c2 0 3.3 1.1 4 2.2C10.7 6.1 12 5 14 5c3.3 0 5 3.2 3.5 6.4C19 15.65 12 20 12 20Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" />
+              </svg>
+            }
+            @case ('level') {
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" aria-hidden="true">
+                <path d="M12 2.5 14.6 8.7 21.2 9.3 16.2 13.6 17.7 20.1 12 16.6 6.3 20.1 7.8 13.6 2.8 9.3 9.4 8.7Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" />
+              </svg>
+            }
+          }
+        </span>
+        <div>
+          <p class="profile-stat__valor">{{ stat.valor }}</p>
+          <p class="profile-stat__label">{{ stat.label }}</p>
+        </div>
+      </div>
+    }
+  </div>
+
+  <div class="profile-card">
+    <div class="profile-card__heading">
+      <h2>Datos personales</h2>
+      @if (guardadoOk()) {
+        <span class="profile-card__saved">Cambios guardados ✓</span>
+      }
+    </div>
+
+    @if (!editando()) {
+      <dl class="profile-info">
+        <div class="profile-info__row">
+          <dt>Nombre</dt>
+          <dd>{{ perfil.nombre }} {{ perfil.apellido }}</dd>
+        </div>
+        <div class="profile-info__row">
+          <dt>Correo</dt>
+          <dd>{{ perfil.email }}</dd>
+        </div>
+        <div class="profile-info__row">
+          <dt>Teléfono</dt>
+          <dd>{{ perfil.telefono || 'Sin registrar' }}</dd>
+        </div>
+        <div class="profile-info__row">
+          <dt>Dirección</dt>
+          <dd>{{ perfil.direccion || 'Sin registrar' }}</dd>
+        </div>
+      </dl>
+    } @else {
+      <form class="profile-form" (ngSubmit)="guardarCambios()">
+        <div class="profile-form__grid">
+          <label class="profile-form__field">
+            <span>Nombre</span>
+            <input type="text" name="nombre" [(ngModel)]="draft.nombre" required />
+          </label>
+
+          <label class="profile-form__field">
+            <span>Apellido</span>
+            <input type="text" name="apellido" [(ngModel)]="draft.apellido" required />
+          </label>
+
+          <label class="profile-form__field profile-form__field--full">
+            <span>Correo</span>
+            <input type="email" name="email" [ngModel]="draft.email" disabled readonly />
+            <small class="profile-form__hint">
+              El correo no se puede modificar: el acceso está ligado a tu cuenta de Microsoft/Azure.
+            </small>
+          </label>
+
+          <label class="profile-form__field">
+            <span>Teléfono</span>
+            <input type="tel" name="telefono" [(ngModel)]="draft.telefono" />
+          </label>
+
+          <label class="profile-form__field">
+            <span>Dirección</span>
+            <input type="text" name="direccion" [(ngModel)]="draft.direccion" />
+          </label>
+        </div>
+
+        <div class="profile-form__actions">
+          <button type="button" class="btn btn--ghost" (click)="cancelarEdicion()">Cancelar</button>
+          <button type="submit" class="btn btn--primary">Guardar cambios</button>
+        </div>
+      </form>
+    }
+  </div>
+</section>

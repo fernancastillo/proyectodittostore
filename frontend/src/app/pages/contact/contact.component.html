@@ -1,0 +1,230 @@
+<section class="contact-page">
+  <div class="contact-page__bg" aria-hidden="true"></div>
+
+  <div class="contact-page__content container">
+
+    <div class="contact-page__header">
+      <h1>Contacto</h1>
+
+      <p class="contact-page__lead">
+        Escríbenos por cualquiera de estos canales, súmate a la comunidad o revisa
+        abajo la información de ventas y despacho.
+      </p>
+    </div>
+
+    <div class="contact-page__channels">
+      @for (channel of channels; track channel.label) {
+        <a
+          class="channel-card channel-card--{{ channel.accent }}"
+          [href]="channel.href"
+          [target]="channel.external ? '_blank' : null"
+          [rel]="channel.external ? 'noopener noreferrer' : null"
+        >
+          <span class="channel-card__corner" aria-hidden="true"></span>
+
+          <span class="channel-card__icon">
+            @switch (channel.icon) {
+              @case ('instagram') {
+                <svg viewBox="0 0 24 24" width="26" height="26" fill="none" aria-hidden="true">
+                  <rect
+                    x="3"
+                    y="3"
+                    width="18"
+                    height="18"
+                    rx="5"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  />
+                  <circle
+                    cx="12"
+                    cy="12"
+                    r="4"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  />
+                  <circle
+                    cx="17.4"
+                    cy="6.6"
+                    r="1.1"
+                    fill="currentColor"
+                  />
+                </svg>
+              }
+
+              @case ('gmail') {
+                <svg viewBox="0 0 24 24" width="26" height="26" fill="none" aria-hidden="true">
+                  <rect
+                    x="3"
+                    y="5"
+                    width="18"
+                    height="14"
+                    rx="2.5"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  />
+                  <path
+                    d="M4 6.5 12 13l8-6.5"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              }
+
+              @case ('group') {
+                <svg viewBox="0 0 24 24" width="26" height="26" fill="none" aria-hidden="true">
+                  <circle
+                    cx="9"
+                    cy="9"
+                    r="3"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  />
+                  <path
+                    d="M3.5 19c1-3 3-4.6 5.5-4.6s4.5 1.6 5.5 4.6"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                  />
+                  <circle
+                    cx="17"
+                    cy="8"
+                    r="2.4"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  />
+                  <path
+                    d="M15.5 14.6c2.1.2 3.7 1.7 4.5 4.4"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                  />
+                </svg>
+              }
+            }
+          </span>
+
+          <span class="channel-card__text">
+            <span class="channel-card__label">
+              {{ channel.label }}
+            </span>
+
+            <span class="channel-card__handle">
+              {{ channel.handle }}
+            </span>
+          </span>
+        </a>
+      }
+    </div>
+
+    <div class="contact-page__divider" aria-hidden="true">
+      <span></span>
+      <span></span>
+      <span></span>
+      <span class="contact-page__divider-ball"></span>
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+
+    <div class="contact-page__info">
+      @for (block of infoBlocks; track block.title) {
+        <div class="info-card">
+
+          <div class="info-card__heading">
+            <span class="info-card__icon">
+
+              @switch (block.icon) {
+                @case ('tag') {
+                  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" aria-hidden="true">
+                    <path
+                      d="M11.6 3.5H6.2a1.6 1.6 0 0 0-1.6 1.6v5.4c0 .42.17.83.47 1.13l9.1 9.1a1.6 1.6 0 0 0 2.26 0l4.94-4.94a1.6 1.6 0 0 0 0-2.26l-9.1-9.1a1.6 1.6 0 0 0-1.13-.47Z"
+                      stroke="currentColor"
+                      stroke-width="1.8"
+                      stroke-linejoin="round"
+                    />
+                    <circle
+                      cx="9"
+                      cy="9"
+                      r="1.5"
+                      fill="currentColor"
+                    />
+                  </svg>
+                }
+
+                @case ('truck') {
+                  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" aria-hidden="true">
+                    <path
+                      d="M2.5 6.5h11v9h-11z"
+                      stroke="currentColor"
+                      stroke-width="1.8"
+                      stroke-linejoin="round"
+                    />
+                    <path
+                      d="M13.5 10h3.6l3.4 3.1v2.4h-7z"
+                      stroke="currentColor"
+                      stroke-width="1.8"
+                      stroke-linejoin="round"
+                    />
+                    <circle
+                      cx="6.5"
+                      cy="17.2"
+                      r="1.7"
+                      stroke="currentColor"
+                      stroke-width="1.8"
+                    />
+                    <circle
+                      cx="17"
+                      cy="17.2"
+                      r="1.7"
+                      stroke="currentColor"
+                      stroke-width="1.8"
+                    />
+                  </svg>
+                }
+
+                @case ('clock') {
+                  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" aria-hidden="true">
+                    <circle
+                      cx="12"
+                      cy="12"
+                      r="8.5"
+                      stroke="currentColor"
+                      stroke-width="1.8"
+                    />
+                    <path
+                      d="M12 7.5V12l3.2 2"
+                      stroke="currentColor"
+                      stroke-width="1.8"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                }
+              }
+
+            </span>
+
+            <h2>{{ block.title }}</h2>
+          </div>
+
+          <ul>
+            @for (item of block.items; track item) {
+              <li>
+                <span
+                  class="info-card__bullet"
+                  aria-hidden="true"
+                ></span>
+
+                {{ item }}
+              </li>
+            }
+          </ul>
+
+        </div>
+      }
+    </div>
+
+  </div>
+</section>

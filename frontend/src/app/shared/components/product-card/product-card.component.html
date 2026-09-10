@@ -1,0 +1,35 @@
+<article class="product-card">
+  <button
+    type="button"
+    class="product-card__media"
+    (click)="toggleDescription()"
+    [attr.aria-pressed]="showDescription()"
+    [attr.aria-label]="'Ver descripción de ' + product.nombre"
+  >
+    <img [src]="product.imagen" [alt]="product.nombre" loading="lazy" />
+
+    @if (product.rareza) {
+      <span class="product-card__badge">{{ product.rareza }}</span>
+    }
+
+    <div class="product-card__overlay" [class.product-card__overlay--visible]="showDescription()">
+      <p>{{ product.descripcion }}</p>
+      @if (product.setNombre) {
+        <p class="product-card__set">Set: {{ product.setNombre }}</p>
+      }
+    </div>
+  </button>
+
+  <div class="product-card__body">
+    <p class="product-card__name">{{ product.nombre }}</p>
+    <p class="product-card__price">{{ product.precio | currency: 'CLP' : 'symbol-narrow' : '1.0-0' }}</p>
+    <button
+      type="button"
+      class="btn btn--primary product-card__cta"
+      [class.product-card__cta--added]="recienAgregado()"
+      (click)="agregarAlCarrito()"
+    >
+      {{ recienAgregado() ? '¡Añadido! ✓' : 'Añadir al carrito' }}
+    </button>
+  </div>
+</article>
