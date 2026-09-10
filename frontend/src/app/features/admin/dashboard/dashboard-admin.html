@@ -1,42 +1,71 @@
 <div class="dashboard">
   <header class="dashboard__header">
     <p class="dashboard__eyebrow">Panel de administración</p>
-    <h1>Dashboard</h1>
+    <h1>Dashboard Principal</h1>
   </header>
 
   @if (cargando) {
     <div class="dashboard__loading">
       <div class="spinner"></div>
-      <p>Cargando métricas...</p>
+      <p>Cargando métricas de DittoStore...</p>
     </div>
   }
 
   @if (error) {
-    <div class="alert alert--error">{{ error }}</div>
+    <div class="alert alert--error">
+      <svg class="alert__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <span>{{ error }}</span>
+    </div>
   }
 
   @if (metricas) {
     <section class="stats-grid">
       <article class="stat-card">
-        <p class="stat-card__label">Productos</p>
-        <p class="stat-card__value">{{ metricas.totalProductos }}</p>
+        <div class="stat-card__icon stat-card__icon--blue">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+        </div>
+        <div class="stat-card__data">
+          <p class="stat-card__label">Total Productos</p>
+          <p class="stat-card__value">{{ metricas.totalProductos }}</p>
+        </div>
       </article>
+
       <article class="stat-card">
-        <p class="stat-card__label">Usuarios</p>
-        <p class="stat-card__value">{{ metricas.totalUsuarios }}</p>
+        <div class="stat-card__icon stat-card__icon--purple">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+        </div>
+        <div class="stat-card__data">
+          <p class="stat-card__label">Usuarios Activos</p>
+          <p class="stat-card__value">{{ metricas.totalUsuarios }}</p>
+        </div>
       </article>
+
       <article class="stat-card">
-        <p class="stat-card__label">Pedidos</p>
-        <p class="stat-card__value">{{ metricas.totalPedidos }}</p>
+        <div class="stat-card__icon stat-card__icon--emerald">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+        </div>
+        <div class="stat-card__data">
+          <p class="stat-card__label">Pedidos Totales</p>
+          <p class="stat-card__value">{{ metricas.totalPedidos }}</p>
+        </div>
       </article>
+
       <article class="stat-card stat-card--highlight">
-        <p class="stat-card__label">Ingresos totales</p>
-        <p class="stat-card__value">${{ metricas.ingresosTotales | number:'1.0-0' }}</p>
+        <div class="stat-card__icon stat-card__icon--highlight">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        </div>
+        <div class="stat-card__data">
+          <p class="stat-card__label">Ingresos Totales</p>
+          <p class="stat-card__value">${{ metricas.ingresosTotales | number:'1.0-0' }}</p>
+        </div>
       </article>
     </section>
 
     <section class="panel">
-      <h2 class="panel__title">Pedidos por estado</h2>
+      <div class="panel__header">
+        <h2 class="panel__title">Pedidos por estado</h2>
+        <span class="panel__subtitle">Resumen en tiempo real</span>
+      </div>
       <ul class="status-list">
         @for (item of metricas.pedidosPorEstado | keyvalue; track item.key) {
           <li class="status-list__item">

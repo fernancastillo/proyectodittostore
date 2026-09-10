@@ -4,9 +4,9 @@ import com.dittostore.infrastructure.bffservice.client.PedidosClient;
 import com.dittostore.infrastructure.bffservice.client.ProductoClient;
 import com.dittostore.infrastructure.bffservice.client.UsuariosClient;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/bff/admin")
@@ -20,6 +20,22 @@ public class AdminController {
     @GetMapping("/productos")
     public Object obtenerProductos() {
         return productoClient.obtenerProductos();
+    }
+
+    @PostMapping("/productos")
+    public ResponseEntity<Object> crearProducto(@RequestBody Object dto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(productoClient.crearProducto(dto));
+    }
+
+    @PutMapping("/productos/{id}")
+    public Object actualizarProducto(@PathVariable Long id, @RequestBody Object dto) {
+        return productoClient.actualizarProducto(id, dto);
+    }
+
+    @DeleteMapping("/productos/{id}")
+    public ResponseEntity<Void> eliminarProducto(@PathVariable Long id) {
+        productoClient.eliminarProducto(id);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/pedidos")
