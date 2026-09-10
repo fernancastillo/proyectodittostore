@@ -10,6 +10,6 @@ export const routes: Routes = [
   {
     path: 'admin',
     canActivate: [MsalGuard, roleGuard('ADMIN')],
-    loadChildren: () => import('./features/admin/dashboard/dashboard.routes').then(m => m.ADMIN_ROUTES)
+    loadChildren: () => import('./features/admin/admin.routes').then(m => m.ADMIN_ROUTES)
   }
 ];

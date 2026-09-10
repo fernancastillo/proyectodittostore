@@ -1,0 +1,77 @@
+.admin-shell {
+  display: flex;
+  min-height: 100vh;
+  background: #f4f5f7;
+
+  &__content {
+    flex: 1;
+    padding: 2.5rem;
+  }
+}
+
+.sidebar {
+  width: 240px;
+  flex-shrink: 0;
+  background: #1a1a2e;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem 1rem;
+
+  &__brand {
+    display: block;
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: #ffffff;
+    text-decoration: none;
+    padding: 0.5rem 0.75rem 1.5rem;
+    letter-spacing: -0.02em;
+  }
+
+  &__nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    flex: 1;
+  }
+
+  &__link {
+    display: block;
+    padding: 0.7rem 0.9rem;
+    border-radius: 8px;
+    color: #c7c9d9;
+    text-decoration: none;
+    font-size: 0.92rem;
+    font-weight: 500;
+    transition: background-color 0.15s ease, color 0.15s ease;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.06);
+      color: #ffffff;
+    }
+
+    &.active {
+      background: #e63946;
+      color: #ffffff;
+      font-weight: 600;
+    }
+  }
+
+  &__logout {
+    margin-top: auto;
+    padding: 0.7rem 0.9rem;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    background: transparent;
+    color: #c7c9d9;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: #ffffff;
+    }
+  }
+}
