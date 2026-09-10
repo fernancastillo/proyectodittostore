@@ -8,6 +8,7 @@ export const environment = {
   },
   apiConfig: {
     scopes: ['api://dittostore.onmicrosoft.com/dittostore-backend/Store.Access'],
-    bffUri: 'http://localhost:8081' 
+    bffUri: 'http://localhost:8081',
+    gatewayUri: 'http://localhost:8080'
   }
 };

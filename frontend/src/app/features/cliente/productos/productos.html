@@ -1,17 +1,8 @@
-<section class="hero">
-  <div class="hero-content">
-    <h2>Descubre la mejor tecnología</h2>
-    <p>Explora nuestro catálogo y encuentra ofertas increíbles exclusivas para ti.</p>
-    <a routerLink="/productos" class="btn btn-primary btn-large">Ver Productos</a>
-  </div>
-</section>
-
-<!-- Sección de Productos Destacados -->
 <section class="featured-section">
-  <h3 class="section-title">Nuestros Productos</h3>
+  <h3 class="section-title">Catálogo completo</h3>
 
   <div class="products-grid">
-    @for (producto of productosDestacados; track producto.id) {
+    @for (producto of productos; track producto.id) {
       <article class="product-card">
         <img [src]="producto.imagenUrl" [alt]="producto.nombre" class="product-img">
         <div class="product-info">
@@ -22,6 +13,8 @@
           </button>
         </div>
       </article>
+    } @empty {
+      <p>No hay productos disponibles por el momento.</p>
     }
   </div>
 </section>

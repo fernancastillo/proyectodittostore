@@ -44,10 +44,11 @@ export class App implements OnInit {
 
     this.perfilService.cargarPerfil().subscribe({
       next: (perfil) => {
+
         if (perfil.rol === 'ADMIN') {
           this.router.navigateByUrl('/admin');
         } else {
-          this.router.navigateByUrl('/cliente');
+          this.router.navigateByUrl('/');
         }
       },
       error: (err) => console.error('Error cargando perfil:', err)

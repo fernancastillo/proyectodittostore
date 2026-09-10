@@ -1,0 +1,48 @@
+<!-- Barra de Navegación (Navbar) -->
+<nav class="navbar">
+  <div class="nav-brand">
+    <a routerLink="/" class="brand-link"><h1>Ditto Store</h1></a>
+  </div>
+
+  <div class="nav-links">
+    <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Inicio</a>
+    <a routerLink="/productos" routerLinkActive="active">Productos</a>
+    <a routerLink="/contacto" routerLinkActive="active">Contacto</a>
+  </div>
+
+  <div class="nav-auth">
+    <!-- Botón del carrito de compras -->
+    <a routerLink="/carrito" routerLinkActive="active" class="btn btn-cart">
+      🛒 Carrito
+      @if (carritoService.cantidad() > 0) {
+        <span class="cart-badge">{{ carritoService.cantidad() }}</span>
+      }
+    </a>
+
+    <!-- Autenticación -->
+    @if (!isLoggedIn) {
+      <button class="btn btn-primary" (click)="login()">Iniciar sesión</button>
+    } @else {
+      <a routerLink="/perfil" routerLinkActive="active" class="btn btn-outline">Mi perfil</a>
+      <span class="user-greeting">Hola, <strong>{{ nombreUsuario }}</strong></span>
+      <button class="btn btn-outline" (click)="logout()">Cerrar sesión</button>
+    }
+  </div>
+</nav>
+
+<!-- Contenido de cada página de cliente -->
+<main class="cliente-content">
+  <router-outlet></router-outlet>
+</main>
+
+<footer class="footer">
+  <div class="footer-container">
+    <div class="footer-col">
+      <h4>Ditto Store</h4>
+      <p>Tu e-commerce de confianza para comprar todo lo que necesitas al mejor precio.</p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>&copy; 2026 Ditto Store. Todos los derechos reservados.</p>
+  </div>
+</footer>
