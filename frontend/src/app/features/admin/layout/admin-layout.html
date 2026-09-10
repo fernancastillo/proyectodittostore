@@ -1,0 +1,26 @@
+<div class="admin-shell">
+  <aside class="sidebar">
+    <a routerLink="/" class="sidebar__brand">Ditto Store</a>
+
+    <nav class="sidebar__nav">
+      <a routerLink="/admin" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="sidebar__link">
+        Dashboard
+      </a>
+      <a routerLink="/admin/productos" routerLinkActive="active" class="sidebar__link">
+        Productos
+      </a>
+      <a routerLink="/admin/usuarios" routerLinkActive="active" class="sidebar__link">
+        Usuarios
+      </a>
+      <a routerLink="/admin/pedidos" routerLinkActive="active" class="sidebar__link">
+        Pedidos
+      </a>
+    </nav>
+
+    <button class="sidebar__logout" (click)="logout()">Cerrar sesión</button>
+  </aside>
+
+  <main class="admin-shell__content">
+    <router-outlet></router-outlet>
+  </main>
+</div>

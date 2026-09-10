@@ -1,0 +1,50 @@
+<div class="dashboard">
+  <header class="dashboard__header">
+    <p class="dashboard__eyebrow">Panel de administración</p>
+    <h1>Dashboard</h1>
+  </header>
+
+  @if (cargando) {
+    <div class="dashboard__loading">
+      <div class="spinner"></div>
+      <p>Cargando métricas...</p>
+    </div>
+  }
+
+  @if (error) {
+    <div class="alert alert--error">{{ error }}</div>
+  }
+
+  @if (metricas) {
+    <section class="stats-grid">
+      <article class="stat-card">
+        <p class="stat-card__label">Productos</p>
+        <p class="stat-card__value">{{ metricas.totalProductos }}</p>
+      </article>
+      <article class="stat-card">
+        <p class="stat-card__label">Usuarios</p>
+        <p class="stat-card__value">{{ metricas.totalUsuarios }}</p>
+      </article>
+      <article class="stat-card">
+        <p class="stat-card__label">Pedidos</p>
+        <p class="stat-card__value">{{ metricas.totalPedidos }}</p>
+      </article>
+      <article class="stat-card stat-card--highlight">
+        <p class="stat-card__label">Ingresos totales</p>
+        <p class="stat-card__value">${{ metricas.ingresosTotales | number:'1.0-0' }}</p>
+      </article>
+    </section>
+
+    <section class="panel">
+      <h2 class="panel__title">Pedidos por estado</h2>
+      <ul class="status-list">
+        @for (item of metricas.pedidosPorEstado | keyvalue; track item.key) {
+          <li class="status-list__item">
+            <span [class]="claseParaEstado(item.key.toString())">{{ item.key }}</span>
+            <span class="status-list__count">{{ item.value }}</span>
+          </li>
+        }
+      </ul>
+    </section>
+  }
+</div>
