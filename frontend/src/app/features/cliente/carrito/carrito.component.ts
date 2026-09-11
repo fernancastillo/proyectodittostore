@@ -2,7 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CarritoService } from './carrito.service';
-import { Carrito } from './carrito.model';
+import { Carrito, CheckoutResponse, MetodoPago } from './carrito.model';
 
 @Component({
   selector: 'app-carrito',
@@ -79,5 +79,31 @@ export class CarritoComponent {
   totalCarrito(): number {
     const items = this.carrito()?.items ?? [];
     return items.reduce((acc, item) => acc + item.subtotal, 0);
+  }
+
+  direccionEnvio = '';
+  pagando = signal(false);
+  pedidoConfirmado = signal<CheckoutResponse | null>(null);
+
+  pagarCon(metodoPago: MetodoPago): void {
+    this.error.set(null);
+
+    if (!this.direccionEnvio.trim()) {
+      this.error.set('Ingresa una dirección de envío antes de pagar.');
+      return;
+    }
+
+    this.pagando.set(true);
+    this.carritoService.pagar(this.direccionEnvio, metodoPago).subscribe({
+      next: (resultado) => {
+        this.pedidoConfirmado.set(resultado);
+        this.pagando.set(false);
+        this.cargarCarrito();
+      },
+      error: (err) => {
+        this.error.set(`Error ${err.status}: ${err.message}`);
+        this.pagando.set(false);
+      },
+    });
   }
 }

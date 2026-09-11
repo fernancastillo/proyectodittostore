@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
-import { Carrito } from './carrito.model';
+import { Carrito, CheckoutResponse, MetodoPago } from './carrito.model';
 
 const BASE_URL = `${environment.apiConfig.bffUri}/bff/carrito`;
 
@@ -33,4 +33,11 @@ export class CarritoService {
   vaciarCarrito(): Observable<Carrito> {
     return this.http.delete<Carrito>(BASE_URL);
   }
+
+  pagar(direccionEnvio: string, metodoPago: MetodoPago): Observable<CheckoutResponse> {
+  return this.http.post<CheckoutResponse>(`${BASE_URL.replace('/carrito', '/pago')}/checkout`, {
+    direccionEnvio,
+    metodoPago,
+  });
+}
 }

@@ -15,3 +15,15 @@ export interface Carrito {
   estado: string;
   items: CarritoItem[];
 }
+
+export type MetodoPago = 'PAYPAL' | 'TARJETA';
+
+export interface CheckoutResponse {
+  pedidoId: number;
+  estadoPedido: string;
+  total: number;
+  pagoId: number;
+  estadoPago: string;
+  transaccionId: string;
+  metodoPago: string;
+}
