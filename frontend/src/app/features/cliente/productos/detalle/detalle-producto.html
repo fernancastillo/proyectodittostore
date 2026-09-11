@@ -1,0 +1,55 @@
+<div class="detalle-page">
+  <a class="volver" [routerLink]="['/productos']">&larr; Volver al catálogo</a>
+
+  @if (cargando) {
+    <p class="text-muted">Cargando producto...</p>
+  } @else if (error) {
+    <div class="alert alert--error">{{ error }}</div>
+  } @else if (producto) {
+    <div class="detalle-card">
+      <div class="detalle-card__imagen">
+        @if (producto.imagenUrl) {
+          <img [src]="producto.imagenUrl" [alt]="producto.nombre" />
+        } @else {
+          <span class="detalle-card__placeholder">Sin imagen</span>
+        }
+      </div>
+
+      <div class="detalle-card__info">
+        <span class="type-pill">{{ formatearTipoCaja(producto.tipoCaja) }}</span>
+        <h1 class="detalle-card__nombre">{{ producto.nombre }}</h1>
+        <p class="detalle-card__coleccion">{{ producto.coleccionSet }}</p>
+
+        <p class="detalle-card__descripcion">{{ producto.descripcion }}</p>
+
+        <dl class="detalle-card__specs">
+          <div>
+            <dt>Idioma</dt>
+            <dd>{{ formatearIdioma(producto.idioma) }}</dd>
+          </div>
+          @if (producto.cantidadSobres) {
+            <div>
+              <dt>Sobres por caja</dt>
+              <dd>{{ producto.cantidadSobres }}</dd>
+            </div>
+          }
+          @if (producto.cartasPorSobre) {
+            <div>
+              <dt>Cartas por sobre</dt>
+              <dd>{{ producto.cartasPorSobre }}</dd>
+            </div>
+          }
+        </dl>
+
+        <div class="detalle-card__footer">
+          <span class="detalle-card__precio">${{ formatearPrecio(producto.precio) }}</span>
+          @if (producto.stock > 0) {
+            <span class="stock-pill stock-pill--ok">{{ producto.stock }} disponibles</span>
+          } @else {
+            <span class="stock-pill stock-pill--out">Sin stock</span>
+          }
+        </div>
+      </div>
+    </div>
+  }
+</div>
