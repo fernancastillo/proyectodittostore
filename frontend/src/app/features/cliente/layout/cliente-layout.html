@@ -1,29 +1,55 @@
 <nav class="navbar">
-  <div class="nav-brand">
-    <a routerLink="/" class="brand-link"><h1>Ditto Store</h1></a>
+  <div class="navbar-header">
+    <div class="nav-brand">
+      <a routerLink="/" class="brand-link" (click)="cerrarMenu()">
+        <h1>Ditto Store</h1>
+      </a>
+    </div>
+
+    <div class="nav-mobile-actions">
+      <a routerLink="/carrito" (click)="cerrarMenu()" class="btn btn-cart mobile-cart" aria-label="Ver Carrito">
+        🛒
+        @if (carritoService.cantidad() > 0) {
+          <span class="cart-badge">{{ carritoService.cantidad() }}</span>
+        }
+      </a>
+
+      <button 
+        class="menu-toggle" 
+        [class.open]="menuAbierto" 
+        (click)="toggleMenu()" 
+        aria-label="Abrir menú de navegación"
+      >
+        <span class="hamburger-bar"></span>
+        <span class="hamburger-bar"></span>
+        <span class="hamburger-bar"></span>
+      </button>
+    </div>
   </div>
 
-  <div class="nav-links">
-    <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Inicio</a>
-    <a routerLink="/productos" routerLinkActive="active">Productos</a>
-    <a routerLink="/contacto" routerLinkActive="active">Contacto</a>
-  </div>
+  <div class="nav-collapse" [class.open]="menuAbierto">
+    <div class="nav-links">
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="cerrarMenu()">Inicio</a>
+      <a routerLink="/productos" routerLinkActive="active" (click)="cerrarMenu()">Productos</a>
+      <a routerLink="/contacto" routerLinkActive="active" (click)="cerrarMenu()">Contacto</a>
+    </div>
 
-  <div class="nav-auth">
-    <a routerLink="/carrito" routerLinkActive="active" class="btn btn-cart">
-      🛒 Carrito
-      @if (carritoService.cantidad() > 0) {
-        <span class="cart-badge">{{ carritoService.cantidad() }}</span>
+    <div class="nav-auth">
+      <a routerLink="/carrito" routerLinkActive="active" (click)="cerrarMenu()" class="btn btn-cart desktop-cart">
+        🛒 Carrito
+        @if (carritoService.cantidad() > 0) {
+          <span class="cart-badge">{{ carritoService.cantidad() }}</span>
+        }
+      </a>
+
+      @if (!isLoggedIn) {
+        <button class="btn btn-primary" (click)="login(); cerrarMenu()">Iniciar sesión</button>
+      } @else {
+        <span class="user-greeting">Hola, <strong>{{ nombreUsuario }}</strong></span>
+        <a routerLink="/perfil" routerLinkActive="active" (click)="cerrarMenu()" class="btn btn-outline">Mi perfil</a>
+        <button class="btn btn-outline btn-logout" (click)="logout(); cerrarMenu()">Cerrar sesión</button>
       }
-    </a>
-
-    @if (!isLoggedIn) {
-      <button class="btn btn-primary" (click)="login()">Iniciar sesión</button>
-    } @else {
-      <a routerLink="/perfil" routerLinkActive="active" class="btn btn-outline">Mi perfil</a>
-      <span class="user-greeting">Hola, <strong>{{ nombreUsuario }}</strong></span>
-      <button class="btn btn-outline" (click)="logout()">Cerrar sesión</button>
-    }
+    </div>
   </div>
 </nav>
 
@@ -41,9 +67,9 @@
     <div class="footer-col">
       <h4 class="footer-title">Navegación</h4>
       <ul class="footer-links">
-        <li><a routerLink="/">Inicio</a></li>
-        <li><a routerLink="/productos">Catálogo de Productos</a></li>
-        <li><a routerLink="/contacto">Contacto y Soporte</a></li>
+        <li><a routerLink="/" (click)="cerrarMenu()">Inicio</a></li>
+        <li><a routerLink="/productos" (click)="cerrarMenu()">Catálogo de Productos</a></li>
+        <li><a routerLink="/contacto" (click)="cerrarMenu()">Contacto y Soporte</a></li>
       </ul>
     </div>
 

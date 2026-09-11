@@ -21,6 +21,7 @@ export class ClienteLayout implements OnInit {
 
   isLoggedIn = false;
   nombreUsuario = '';
+  menuAbierto = false; 
 
   ngOnInit(): void {
     this.actualizarEstadoLogin();
@@ -37,6 +38,14 @@ export class ClienteLayout implements OnInit {
     this.isLoggedIn = cuentas.length > 0;
     this.nombreUsuario = cuentas.length > 0 ? cuentas[0].name ?? cuentas[0].username : '';
     this.cdr.detectChanges();
+  }
+
+  toggleMenu(): void {
+    this.menuAbierto = !this.menuAbierto;
+  }
+
+  cerrarMenu(): void {
+    this.menuAbierto = false;
   }
 
   login(): void {
