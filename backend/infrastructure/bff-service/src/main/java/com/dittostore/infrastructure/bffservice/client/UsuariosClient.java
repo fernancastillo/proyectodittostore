@@ -19,4 +19,10 @@ public interface UsuariosClient {
 
     @PostMapping("/api/usuarios/sync")
     Object sincronizarUsuario(@RequestBody UsuarioSyncDTO dto);
+
+    @PutMapping("/api/usuarios/{id}")
+    Object actualizarUsuario(@PathVariable Long id, @RequestBody Object dto);
+
+    @DeleteMapping("/api/usuarios/{id}")
+    void eliminarUsuario(@PathVariable Long id);
 }

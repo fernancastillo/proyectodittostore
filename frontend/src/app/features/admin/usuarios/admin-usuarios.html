@@ -1,0 +1,170 @@
+<div class="usuarios-page">
+  <div class="usuarios-page__header">
+    <div>
+      <h1 class="page-title">Gestión de Usuarios</h1>
+      <p class="page-subtitle">Administra las cuentas de clientes y administradores de DittoStore</p>
+    </div>
+  </div>
+
+  @if (error) {
+    <div class="alert alert--error">{{ error }}</div>
+  }
+
+  <div class="filters-panel">
+    <div class="filters-grid">
+      <div class="filter-item">
+        <label>Buscar</label>
+        <input type="text" placeholder="Nombre, apellido o email..." [(ngModel)]="filtroTexto" />
+      </div>
+
+      <div class="filter-item">
+        <label>Rol</label>
+        <select [(ngModel)]="filtroRol">
+          <option value="">Todos</option>
+          @for (rol of roles; track rol) {
+            <option [value]="rol">{{ formatearRol(rol) }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="filter-item">
+        <label>Ordenar por</label>
+        <select [(ngModel)]="ordenarPor">
+          <option value="">Sin orden</option>
+          <option value="nombre-asc">Nombre (A - Z)</option>
+          <option value="nombre-desc">Nombre (Z - A)</option>
+          <option value="email-asc">Email (A - Z)</option>
+          <option value="email-desc">Email (Z - A)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="filters-actions">
+      <button class="btn btn--outline btn--sm" (click)="limpiarFiltros()">Limpiar Filtros</button>
+    </div>
+  </div>
+
+  @if (cargando) {
+    <div class="loading">
+      <div class="spinner"></div>
+      <p>Cargando usuarios...</p>
+    </div>
+  } @else {
+    <div class="table-wrapper">
+      <table class="tabla">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Email</th>
+            <th>Teléfono</th>
+            <th>Dirección</th>
+            <th class="text-center">Rol</th>
+            <th class="text-right">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (usuario of usuariosFiltrados; track usuario.id) {
+            <tr>
+              <td class="font-mono text-muted">#{{ usuario.id }}</td>
+              <td><strong class="usuario-name">{{ usuario.nombre }} {{ usuario.apellido }}</strong></td>
+              <td>{{ usuario.email }}</td>
+              <td>{{ usuario.telefono || 'N/A' }}</td>
+              <td>{{ usuario.direccion || 'N/A' }}</td>
+              <td class="text-center">
+                <span [class]="usuario.rol === 'ADMIN' ? 'role-pill role-pill--admin' : 'role-pill role-pill--cliente'">
+                  {{ formatearRol(usuario.rol) }}
+                </span>
+              </td>
+              <td class="acciones text-right">
+                <button class="btn-icon" title="Editar" (click)="abrirModalEditar(usuario)">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                </button>
+                <button class="btn-icon btn-icon--danger" title="Eliminar" (click)="eliminar(usuario)">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                </button>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="7" class="sin-resultados">No se encontraron usuarios registrados.</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>
+
+@if (mostrandoModal && usuarioActual) {
+  <div class="modal-overlay" (click)="cerrarModal()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <div class="modal__header">
+        <h2>Editar Usuario</h2>
+        <button class="modal__close" (click)="cerrarModal()">✕</button>
+      </div>
+
+      @if (erroresValidacion.length > 0) {
+        <div class="alert alert--error modal-errors">
+          <p class="modal-errors__title">Por favor corrige los siguientes errores:</p>
+          <ul>
+            @for (err of erroresValidacion; track err) {
+              <li>{{ err }}</li>
+            }
+          </ul>
+        </div>
+      }
+
+      <form (ngSubmit)="guardar()">
+        <div class="form-row">
+          <div class="form-group">
+            <label>ID</label>
+            <input type="text" [value]="usuarioActual.id" disabled />
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input type="text" [value]="usuarioActual.email" disabled />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Nombre *</label>
+            <input type="text" [(ngModel)]="usuarioActual.nombre" name="nombre" placeholder="Ej: Juan" />
+          </div>
+          <div class="form-group">
+            <label>Apellido *</label>
+            <input type="text" [(ngModel)]="usuarioActual.apellido" name="apellido" placeholder="Ej: Pérez" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Teléfono</label>
+            <input type="text" [(ngModel)]="usuarioActual.telefono" name="telefono" placeholder="+56 9 1234 5678" />
+          </div>
+          <div class="form-group">
+            <label>Rol *</label>
+            <select [(ngModel)]="usuarioActual.rol" name="rol">
+              @for (rol of roles; track rol) {
+                <option [value]="rol">{{ formatearRol(rol) }}</option>
+              }
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Dirección</label>
+          <input type="text" [(ngModel)]="usuarioActual.direccion" name="direccion" placeholder="Calle, número, comuna" />
+        </div>
+
+        <div class="modal__actions">
+          <button type="button" class="btn btn--outline" (click)="cerrarModal()">Cancelar</button>
+          <button type="submit" class="btn btn--primary" [disabled]="guardando">
+            {{ guardando ? 'Guardando...' : 'Guardar Usuario' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+}
