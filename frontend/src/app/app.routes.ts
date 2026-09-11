@@ -11,17 +11,16 @@ export const routes: Routes = [
       { path: '', loadComponent: () => import('./home/home').then(m => m.Home) },
       { path: 'productos', loadComponent: () => import('./features/cliente/productos/productos').then(m => m.Productos) },
       { path: 'contacto', loadComponent: () => import('./features/cliente/contacto/contacto').then(m => m.Contacto) },
-      { path: 'carrito', loadComponent: () => import('./features/cliente/carrito/carrito').then(m => m.Carrito) },
+      {
+        path: 'carrito',
+        loadComponent: () => import('./features/cliente/carrito/carrito.component').then(m => m.CarritoComponent)
+      },
       {
         path: 'perfil',
         canActivate: [MsalGuard],
         loadComponent: () => import('./features/cliente/perfil/perfil').then(m => m.Perfil)
       }
     ]
-  },
-  {
-    path: 'cliente/carrito',
-    loadChildren: () => import('./features/cliente/carrito/carrito.routes').then((m) => m.CARRITO_ROUTES),
   },
   {
     path: 'admin',
