@@ -1,4 +1,3 @@
-<!-- Barra de Navegación (Navbar) -->
 <nav class="navbar">
   <div class="nav-brand">
     <a routerLink="/" class="brand-link"><h1>Ditto Store</h1></a>
@@ -11,7 +10,6 @@
   </div>
 
   <div class="nav-auth">
-    <!-- Botón del carrito de compras -->
     <a routerLink="/carrito" routerLinkActive="active" class="btn btn-cart">
       🛒 Carrito
       @if (carritoService.cantidad() > 0) {
@@ -19,7 +17,6 @@
       }
     </a>
 
-    <!-- Autenticación -->
     @if (!isLoggedIn) {
       <button class="btn btn-primary" (click)="login()">Iniciar sesión</button>
     } @else {
@@ -30,7 +27,6 @@
   </div>
 </nav>
 
-<!-- Contenido de cada página de cliente -->
 <main class="cliente-content">
   <router-outlet></router-outlet>
 </main>
@@ -38,10 +34,29 @@
 <footer class="footer">
   <div class="footer-container">
     <div class="footer-col">
-      <h4>Ditto Store</h4>
-      <p>Tu e-commerce de confianza para comprar todo lo que necesitas al mejor precio.</p>
+      <h4 class="footer-title">Ditto Store</h4>
+      <p class="footer-desc">Tu e-commerce especializado en Trading Card Games. Encuentra las mejores cartas, ediciones coleccionables y accesorios para tu colección Pokémon.</p>
+    </div>
+
+    <div class="footer-col">
+      <h4 class="footer-title">Navegación</h4>
+      <ul class="footer-links">
+        <li><a routerLink="/">Inicio</a></li>
+        <li><a routerLink="/productos">Catálogo de Productos</a></li>
+        <li><a routerLink="/contacto">Contacto y Soporte</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h4 class="footer-title">Servicio al Cliente</h4>
+      <ul class="footer-info-list">
+        <li>Envíos a todo el país</li>
+        <li>Pagos 100% seguros</li>
+        <li>Garantía de autenticidad</li>
+      </ul>
     </div>
   </div>
+
   <div class="footer-bottom">
     <p>&copy; 2026 Ditto Store. Todos los derechos reservados.</p>
   </div>

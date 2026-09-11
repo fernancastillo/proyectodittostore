@@ -4,7 +4,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MsalService } from '@azure/msal-angular';
 import { ProductoService, Producto } from '../../../../core/services/producto.service';
 import { ReviewsService, Review } from '../../../../core/services/reviews.service';
-import { CarritoService } from '../../carrito/carrito.service';
+import { CarritoService } from '../../../../core/services/carrito.service';
 
 @Component({
   selector: 'app-detalle-producto',
@@ -72,8 +72,6 @@ export class DetalleProducto implements OnInit {
         this.cdr.detectChanges();
       },
       error: () => {
-        // Si falla la carga de reviews no bloqueamos el resto de la página;
-        // simplemente se muestra como si no hubiera reviews.
         this.reviews = [];
         this.cargandoReviews = false;
         this.cdr.detectChanges();
