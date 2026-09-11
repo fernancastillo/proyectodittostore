@@ -20,6 +20,10 @@ export const routes: Routes = [
     ]
   },
   {
+    path: 'cliente/carrito',
+    loadChildren: () => import('./features/cliente/carrito/carrito.routes').then((m) => m.CARRITO_ROUTES),
+  },
+  {
     path: 'admin',
     canActivate: [MsalGuard, roleGuard('ADMIN')],
     loadChildren: () => import('./features/admin/admin.routes').then(m => m.ADMIN_ROUTES)

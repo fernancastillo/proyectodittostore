@@ -24,4 +24,12 @@ public interface CarritoService {
     CarritoResponseDTO actualizarEstado(Long id, EstadoCarrito nuevoEstado);
 
     void eliminar(Long id);
+
+    CarritoResponseDTO obtenerOCrearActivoPorUsuario(Long usuarioId);
+
+    CarritoResponseDTO incrementarItem(Long carritoId, Long itemId);
+
+    CarritoResponseDTO decrementarItem(Long carritoId, Long itemId);
+
+    CarritoResponseDTO vaciarItems(Long carritoId);
 }

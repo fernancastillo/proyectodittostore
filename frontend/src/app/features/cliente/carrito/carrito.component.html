@@ -1,0 +1,68 @@
+<div>
+  <h1>Carrito (prueba de funcionamiento)</h1>
+
+  <button (click)="cargarCarrito()">Recargar carrito</button>
+  <button (click)="vaciar()">Vaciar carrito</button>
+
+  @if (cargando()) {
+    <p>Cargando...</p>
+  }
+
+  @if (error()) {
+    <p style="color: red;">{{ error() }}</p>
+  }
+
+  <hr>
+
+  <h3>Agregar producto (prueba manual, sin catálogo conectado aún)</h3>
+  <label>
+    ID de producto:
+    <input type="number" [(ngModel)]="productoIdPrueba" min="1">
+  </label>
+  <label>
+    Cantidad:
+    <input type="number" [(ngModel)]="cantidadPrueba" min="1">
+  </label>
+  <button (click)="agregarProductoPrueba()">Agregar al carrito</button>
+
+  <hr>
+
+  @if (carrito(); as c) {
+    <h3>Carrito #{{ c.id }} — Estado: {{ c.estado }}</h3>
+
+    @if (c.items.length === 0) {
+      <p>El carrito está vacío.</p>
+    }
+
+    <table border="1" cellpadding="6">
+      <thead>
+        <tr>
+          <th>Producto</th>
+          <th>Colección</th>
+          <th>Precio unit.</th>
+          <th>Cantidad</th>
+          <th>Subtotal</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (item of c.items; track item.id) {
+          <tr>
+            <td>{{ item.nombre }}</td>
+            <td>{{ item.coleccionSet }}</td>
+            <td>{{ item.precioUnitario }}</td>
+            <td>{{ item.cantidad }}</td>
+            <td>{{ item.subtotal }}</td>
+            <td>
+              <button (click)="decrementar(item.id)">-</button>
+              <button (click)="incrementar(item.id)">+</button>
+              <button (click)="eliminar(item.id)">Eliminar</button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+
+    <h3>Total: {{ totalCarrito() }}</h3>
+  }
+</div>
