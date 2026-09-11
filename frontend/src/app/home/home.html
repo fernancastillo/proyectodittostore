@@ -1,17 +1,50 @@
 <section class="hero-pokemon">
   <div class="hero-content">
-    <h2>¡Consigue las cartas Pokémon más exclusivas!</h2>
+    <h2 class="hero-title">Consigue las cartas Pokémon más exclusivas</h2>
     <p>Desde packs de expansión clásicos hasta las últimas novedades del JCC Pokémon. Hazte con todas y completa tu colección con nosotros.</p>
     <div class="hero-buttons">
-      <a routerLink="/productos" class="btn btn-primary btn-large">Explorar Catálogo</a>
+      <a routerLink="/productos" class="btn btn-primary btn-large hero-cta">
+        <span class="hero-cta-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="20" height="20">
+            <circle cx="12" cy="12" r="9.5" fill="none" stroke="currentColor" stroke-width="2"/>
+            <path d="M2.5 12h6.3M15.2 12h6.3" stroke="currentColor" stroke-width="2"/>
+            <circle cx="12" cy="12" r="3.2" fill="currentColor"/>
+            <circle cx="12" cy="12" r="1.3" fill="#ffffff"/>
+          </svg>
+        </span>
+        Explorar catálogo
+      </a>
+    </div>
+  </div>
+
+  <div class="hero-cards">
+    <div class="hero-cards-glow"></div>
+    <img src="/home/carta-eevee.png" alt="Carta Eevee ex" class="hero-card hero-card-back">
+    <img src="/home/carta-snorlax.jpg" alt="Carta Otakin's Snorlax ex" class="hero-card hero-card-front">
+  </div>
+</section>
+
+<section class="trending-section">
+  <div class="section-header">
+    <h3 class="section-title">¿Ya las tienes?</h3>
+    <p class="section-subtitle">cartas más buscadas y deseadas del momento</p>
+  </div>
+
+  <div class="trending-carousel">
+    <div class="trending-track">
+      @for (img of trendingImagesLoop; track $index) {
+        <div class="trending-card">
+          <img [src]="img" alt="" class="trending-img">
+        </div>
+      }
     </div>
   </div>
 </section>
 
 <section class="featured-section">
   <div class="section-header">
-    <h3 class="section-title">Productos Destacados</h3>
-    <p class="section-subtitle">Las cartas y coleccionables más buscados de nuestra tienda</p>
+    <h3 class="section-title">Lo mejor para tu próxima apertura</h3>
+    <p class="section-subtitle">Cajas elegidas a mano por el equipo de la tienda</p>
   </div>
 
   <div class="products-grid">

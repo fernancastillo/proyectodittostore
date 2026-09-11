@@ -16,6 +16,18 @@ export class Home implements OnInit {
 
   productosDestacados: Producto[] = [];
 
+  private readonly trendingImages: string[] = [
+    '/home/carta-snorlax.jpg',
+    '/home/carta-eevee.png',
+    '/home/carta-3.png',
+    '/home/carta-4.png',
+    '/home/carta-5.png',
+    '/home/carta-6.jpg'
+  ];
+
+  // Se duplica la lista para que el desplazamiento automático sea continuo (sin salto al reiniciar).
+  trendingImagesLoop: string[] = [...this.trendingImages, ...this.trendingImages];
+
   ngOnInit(): void {
     this.cargarProductos();
   }
