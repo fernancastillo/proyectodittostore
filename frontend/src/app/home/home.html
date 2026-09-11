@@ -6,7 +6,6 @@
   </div>
 </section>
 
-<!-- Sección de Productos Destacados -->
 <section class="featured-section">
   <h3 class="section-title">Nuestros Productos</h3>
 
@@ -17,9 +16,9 @@
         <div class="product-info">
           <h4 class="product-name">{{ producto.nombre }}</h4>
           <p class="product-price">${{ producto.precio | number:'1.0-0' }}</p>
-          <button class="btn btn-secondary w-100" (click)="agregarAlCarrito(producto)">
-            Agregar al carrito
-          </button>
+          <a class="btn btn-secondary w-100" [routerLink]="['/productos', producto.id]">
+            Ver Detalles
+          </a>
         </div>
       </article>
     }
