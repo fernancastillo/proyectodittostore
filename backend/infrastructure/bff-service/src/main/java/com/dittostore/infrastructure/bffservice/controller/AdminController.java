@@ -3,6 +3,7 @@ package com.dittostore.infrastructure.bffservice.controller;
 import com.dittostore.infrastructure.bffservice.client.PedidosClient;
 import com.dittostore.infrastructure.bffservice.client.ProductoClient;
 import com.dittostore.infrastructure.bffservice.client.UsuariosClient;
+import com.dittostore.infrastructure.bffservice.dto.EstadoUpdateRequestDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,6 +42,11 @@ public class AdminController {
     @GetMapping("/pedidos")
     public Object obtenerPedidos() {
         return pedidosClient.obtenerTodos();
+    }
+
+    @PatchMapping("/pedidos/{id}/estado")
+    public Object actualizarEstadoPedido(@PathVariable Long id, @RequestBody EstadoUpdateRequestDTO body) {
+        return pedidosClient.actualizarEstadoPedido(id, body);
     }
 
     @GetMapping("/usuarios")
