@@ -1,5 +1,5 @@
-import { Routes } from '@angular/router';
-import { MsalGuard } from '@azure/msal-angular';
+import { Routes } from '@angular/router'; 
+import { MsalGuard } from '@azure/msal-angular'; 
 import { roleGuard } from './core/guards/role.guard';
 import { ClienteLayout } from './features/cliente/layout/cliente-layout';
 
@@ -9,7 +9,7 @@ export const routes: Routes = [
     component: ClienteLayout,
     children: [
       { path: '', loadComponent: () => import('./home/home').then(m => m.Home) },
-      { path: 'productos', loadComponent: () => import('./features/cliente/productos/productos').then(m => m.Productos) },
+      { path: 'productos', loadChildren: () => import('./features/cliente/productos/productos.routes').then(m => m.PRODUCTOS_ROUTES) },
       { path: 'contacto', loadComponent: () => import('./features/cliente/contacto/contacto').then(m => m.Contacto) },
       {
         path: 'carrito',

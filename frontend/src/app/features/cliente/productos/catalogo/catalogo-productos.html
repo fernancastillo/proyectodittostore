@@ -1,0 +1,77 @@
+<div class="catalogo-page">
+  <div class="catalogo-page__header">
+    <h1 class="page-title">Catálogo de Productos</h1>
+    <p class="page-subtitle">Cajas y sobres coleccionables Pokémon disponibles en DittoStore</p>
+  </div>
+
+  @if (error) {
+    <div class="alert alert--error">{{ error }}</div>
+  }
+
+  <div class="filters-panel">
+    <div class="filters-grid">
+      <div class="filter-item">
+        <label>Nombre</label>
+        <input type="text" placeholder="Buscar por nombre..." [(ngModel)]="filtroNombre" />
+      </div>
+
+      <div class="filter-item">
+        <label>Tipo</label>
+        <select [(ngModel)]="filtroTipo">
+          <option value="">Todos</option>
+          @for (tipo of tiposCaja; track tipo) {
+            <option [value]="tipo">{{ formatearTipoCaja(tipo) }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="filter-item">
+        <label>Ordenar por</label>
+        <select [(ngModel)]="ordenarPor">
+          <option value="">Sin orden</option>
+          <option value="nombre-asc">Nombre (A - Z)</option>
+          <option value="nombre-desc">Nombre (Z - A)</option>
+          <option value="precio-asc">Precio (Menor a Mayor)</option>
+          <option value="precio-desc">Precio (Mayor a Menor)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="filters-actions">
+      <button class="btn btn--outline btn--sm" (click)="limpiarFiltros()">Limpiar Filtros</button>
+    </div>
+  </div>
+
+  @if (cargando) {
+    <p class="text-muted">Cargando productos...</p>
+  } @else if (productosFiltrados.length === 0) {
+    <p class="sin-resultados">No se encontraron productos con esos filtros.</p>
+  } @else {
+    <div class="productos-grid">
+      @for (producto of productosFiltrados; track producto.id) {
+        <a class="producto-card" [routerLink]="['/productos', producto.id]">
+          <div class="producto-card__imagen">
+            @if (producto.imagenUrl) {
+              <img [src]="producto.imagenUrl" [alt]="producto.nombre" />
+            } @else {
+              <span class="producto-card__placeholder">Sin imagen</span>
+            }
+          </div>
+          <div class="producto-card__body">
+            <span class="type-pill">{{ formatearTipoCaja(producto.tipoCaja) }}</span>
+            <h3 class="producto-card__nombre">{{ producto.nombre }}</h3>
+            <p class="producto-card__coleccion">{{ producto.coleccionSet }}</p>
+            <div class="producto-card__footer">
+              <span class="price">${{ formatearPrecio(producto.precio) }}</span>
+              @if (producto.stock > 0) {
+                <span class="stock-pill stock-pill--ok">Disponible</span>
+              } @else {
+                <span class="stock-pill stock-pill--out">Sin stock</span>
+              }
+            </div>
+          </div>
+        </a>
+      }
+    </div>
+  }
+</div>
