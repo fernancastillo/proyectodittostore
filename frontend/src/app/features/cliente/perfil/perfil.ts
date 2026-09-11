@@ -1,6 +1,7 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
+import { RouterLink } from '@angular/router'; // 1. Importar RouterLink
 import { forkJoin } from 'rxjs';
 import { PerfilService } from '../../../core/services/perfil.service';
 import { PedidoService, Pedido } from '../../../core/services/pedido.service';
@@ -23,7 +24,7 @@ interface PedidoConProductos extends Omit<Pedido, 'items'> {
 @Component({
   selector: 'app-perfil',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink], // 2. Agregar RouterLink aquí
   templateUrl: './perfil.html',
   styleUrl: './perfil.scss'
 })
@@ -57,7 +58,6 @@ export class Perfil implements OnInit {
       error: (err) => console.error('Error cargando perfil:', err)
     });
   }
-
 
   iniciarEdicion(): void {
     const p = this.perfil();
@@ -104,7 +104,6 @@ export class Perfil implements OnInit {
         }
       });
   }
-
 
   private cargarPedidosYReviews(usuarioId: number): void {
     this.cargandoPedidos.set(true);

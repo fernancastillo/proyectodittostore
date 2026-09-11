@@ -3,7 +3,9 @@
   background-color: #ffffff;
 }
 
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
@@ -37,6 +39,94 @@
   grid-template-columns: 1fr 1.4fr;
   gap: 1.5rem;
   align-items: start;
+}
+
+.admin-banner {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+  color: #ffffff;
+  padding: 1.25rem 1.5rem;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(139, 92, 246, 0.25);
+  gap: 1.5rem;
+
+  .admin-banner-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+
+    p {
+      margin: 0;
+      font-size: 0.9rem;
+      color: #f3e8ff;
+    }
+  }
+
+  .admin-badge {
+    font-size: 0.72rem;
+    font-weight: 800;
+    background: rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    padding: 0.25rem 0.6rem;
+    border-radius: 6px;
+    width: fit-content;
+    letter-spacing: 0.05em;
+  }
+
+  .btn-admin {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    background-color: #ffffff;
+    color: #6d28d9;
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-decoration: none;
+    padding: 0.65rem 1.25rem;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+    .admin-icon {
+      display: block;
+      flex-shrink: 0;
+    }
+
+    &:hover {
+      background-color: #f3e8ff;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+
+    .btn-arrow {
+      transition: transform 0.2s ease;
+    }
+
+    &:hover .btn-arrow {
+      transform: translateX(4px);
+    }
+  }
+}
+
+@media (max-width: 640px) {
+  .admin-banner {
+    flex-direction: column;
+    align-items: flex-start;
+
+    .btn-admin {
+      width: 100%;
+      justify-content: center;
+    }
+  }
 }
 
 @media (max-width: 850px) {
@@ -134,7 +224,9 @@
     margin-bottom: 0.4rem;
   }
 
-  input, select, textarea {
+  input,
+  select,
+  textarea {
     width: 100%;
     padding: 0.65rem 0.85rem;
     border: 1px solid #d1d5db;
@@ -408,7 +500,8 @@
     color: #374151;
   }
 
-  select, textarea {
+  select,
+  textarea {
     width: 100%;
     padding: 0.6rem 0.75rem;
     border: 1px solid #d1d5db;
