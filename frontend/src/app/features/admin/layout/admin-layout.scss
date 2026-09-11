@@ -4,6 +4,7 @@
   background: #0f172a;
   color: #f8fafc;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  position: relative;
 
   &__content {
     flex: 1;
@@ -14,6 +15,59 @@
     color: #1e293b;
     overflow-y: auto;
     box-shadow: -10px 0 25px rgba(0, 0, 0, 0.15);
+    min-width: 0;
+  }
+}
+
+.mobile-header {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 1.25rem;
+  background: #0f172a;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  width: 100%;
+
+  .sidebar__brand {
+    padding: 0;
+  }
+
+  .mobile-toggle {
+    background: transparent;
+    border: none;
+    color: #f8fafc;
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 8px;
+
+    svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.08);
+    }
+  }
+}
+
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(2px);
+  z-index: 998;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+
+  &.active {
+    display: block;
+    opacity: 1;
   }
 }
 
@@ -24,6 +78,34 @@
   display: flex;
   flex-direction: column;
   padding: 1.75rem 1.25rem;
+  z-index: 999;
+  transition: transform 0.3s ease;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__close {
+    display: none;
+    background: transparent;
+    border: none;
+    color: #94a3b8;
+    cursor: pointer;
+    padding: 0.25rem;
+    border-radius: 6px;
+
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    &:hover {
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.1);
+    }
+  }
 
   &__brand {
     display: flex;
@@ -112,5 +194,52 @@
       border-color: rgba(239, 68, 68, 0.3);
       color: #ef4444;
     }
+  }
+}
+
+@media (max-width: 992px) {
+  .admin-shell {
+    flex-direction: column;
+
+    &__content {
+      border-radius: 0;
+      padding: 1.5rem;
+      box-shadow: none;
+    }
+  }
+
+  .mobile-header {
+    display: flex;
+  }
+
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    transform: translateX(-100%);
+    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.3);
+
+    &.active {
+      transform: translateX(0);
+    }
+
+    &__header {
+      width: 100%;
+    }
+
+    &__close {
+      display: flex;
+    }
+
+    &__brand {
+      padding-bottom: 1.5rem;
+    }
+  }
+}
+
+@media (max-width: 576px) {
+  .admin-shell__content {
+    padding: 1rem;
   }
 }

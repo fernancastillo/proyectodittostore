@@ -14,6 +14,16 @@ export class AdminLayout {
   private msalService = inject(MsalService);
   private perfilService = inject(PerfilService);
 
+  isSidebarOpen = false;
+
+  toggleSidebar(): void {
+    this.isSidebarOpen = !this.isSidebarOpen;
+  }
+
+  closeSidebar(): void {
+    this.isSidebarOpen = false;
+  }
+
   logout(): void {
     this.perfilService.limpiar();
     this.msalService.logoutRedirect();

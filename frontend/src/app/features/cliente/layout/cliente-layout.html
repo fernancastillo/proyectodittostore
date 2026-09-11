@@ -1,36 +1,58 @@
-<!-- Barra de Navegación (Navbar) -->
 <nav class="navbar">
-  <div class="nav-brand">
-    <a routerLink="/" class="brand-link"><h1>Ditto Store</h1></a>
+  <div class="navbar-header">
+    <div class="nav-brand">
+      <a routerLink="/" class="brand-link" (click)="cerrarMenu()">
+        <h1>Ditto Store</h1>
+      </a>
+    </div>
+
+    <div class="nav-mobile-actions">
+      <a routerLink="/carrito" (click)="cerrarMenu()" class="btn btn-cart mobile-cart" aria-label="Ver Carrito">
+        🛒
+        @if (carritoService.cantidad() > 0) {
+          <span class="cart-badge">{{ carritoService.cantidad() }}</span>
+        }
+      </a>
+
+      <button 
+        class="menu-toggle" 
+        [class.open]="menuAbierto" 
+        (click)="toggleMenu()" 
+        aria-label="Abrir menú de navegación"
+      >
+        <span class="hamburger-bar"></span>
+        <span class="hamburger-bar"></span>
+        <span class="hamburger-bar"></span>
+      </button>
+    </div>
   </div>
 
-  <div class="nav-links">
-    <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Inicio</a>
-    <a routerLink="/productos" routerLinkActive="active">Productos</a>
-    <a routerLink="/contacto" routerLinkActive="active">Contacto</a>
-  </div>
+  <div class="nav-collapse" [class.open]="menuAbierto">
+    <div class="nav-links">
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="cerrarMenu()">Inicio</a>
+      <a routerLink="/productos" routerLinkActive="active" (click)="cerrarMenu()">Productos</a>
+      <a routerLink="/contacto" routerLinkActive="active" (click)="cerrarMenu()">Contacto</a>
+    </div>
 
-  <div class="nav-auth">
-    <!-- Botón del carrito de compras -->
-    <a routerLink="/carrito" routerLinkActive="active" class="btn btn-cart">
-      🛒 Carrito
-      @if (carritoService.cantidad() > 0) {
-        <span class="cart-badge">{{ carritoService.cantidad() }}</span>
+    <div class="nav-auth">
+      <a routerLink="/carrito" routerLinkActive="active" (click)="cerrarMenu()" class="btn btn-cart desktop-cart">
+        🛒 Carrito
+        @if (carritoService.cantidad() > 0) {
+          <span class="cart-badge">{{ carritoService.cantidad() }}</span>
+        }
+      </a>
+
+      @if (!isLoggedIn) {
+        <button class="btn btn-primary" (click)="login(); cerrarMenu()">Iniciar sesión</button>
+      } @else {
+        <span class="user-greeting">Hola, <strong>{{ nombreUsuario }}</strong></span>
+        <a routerLink="/perfil" routerLinkActive="active" (click)="cerrarMenu()" class="btn btn-outline">Mi perfil</a>
+        <button class="btn btn-outline btn-logout" (click)="logout(); cerrarMenu()">Cerrar sesión</button>
       }
-    </a>
-
-    <!-- Autenticación -->
-    @if (!isLoggedIn) {
-      <button class="btn btn-primary" (click)="login()">Iniciar sesión</button>
-    } @else {
-      <a routerLink="/perfil" routerLinkActive="active" class="btn btn-outline">Mi perfil</a>
-      <span class="user-greeting">Hola, <strong>{{ nombreUsuario }}</strong></span>
-      <button class="btn btn-outline" (click)="logout()">Cerrar sesión</button>
-    }
+    </div>
   </div>
 </nav>
 
-<!-- Contenido de cada página de cliente -->
 <main class="cliente-content">
   <router-outlet></router-outlet>
 </main>
@@ -38,10 +60,29 @@
 <footer class="footer">
   <div class="footer-container">
     <div class="footer-col">
-      <h4>Ditto Store</h4>
-      <p>Tu e-commerce de confianza para comprar todo lo que necesitas al mejor precio.</p>
+      <h4 class="footer-title">Ditto Store</h4>
+      <p class="footer-desc">Tu e-commerce especializado en Trading Card Games. Encuentra las mejores cartas, ediciones coleccionables y accesorios para tu colección Pokémon.</p>
+    </div>
+
+    <div class="footer-col">
+      <h4 class="footer-title">Navegación</h4>
+      <ul class="footer-links">
+        <li><a routerLink="/" (click)="cerrarMenu()">Inicio</a></li>
+        <li><a routerLink="/productos" (click)="cerrarMenu()">Catálogo de Productos</a></li>
+        <li><a routerLink="/contacto" (click)="cerrarMenu()">Contacto y Soporte</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h4 class="footer-title">Servicio al Cliente</h4>
+      <ul class="footer-info-list">
+        <li>Envíos a todo el país</li>
+        <li>Pagos 100% seguros</li>
+        <li>Garantía de autenticidad</li>
+      </ul>
     </div>
   </div>
+
   <div class="footer-bottom">
     <p>&copy; 2026 Ditto Store. Todos los derechos reservados.</p>
   </div>

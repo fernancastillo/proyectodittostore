@@ -1,24 +1,24 @@
 <div class="catalogo-page">
-  <div class="catalogo-page__header">
+  <div class="catalogo-header">
     <h1 class="page-title">Catálogo de Productos</h1>
-    <p class="page-subtitle">Cajas y sobres coleccionables Pokémon disponibles en DittoStore</p>
+    <p class="page-subtitle">Cajas, sobres y coleccionables Pokémon disponibles en Ditto Store</p>
   </div>
 
   @if (error) {
-    <div class="alert alert--error">{{ error }}</div>
+    <div class="alert alert-error">{{ error }}</div>
   }
 
   <div class="filters-panel">
     <div class="filters-grid">
       <div class="filter-item">
-        <label>Nombre</label>
-        <input type="text" placeholder="Buscar por nombre..." [(ngModel)]="filtroNombre" />
+        <label>Buscar por nombre</label>
+        <input type="text" placeholder="Ej: Booster Box, Scarlet..." [(ngModel)]="filtroNombre" />
       </div>
 
       <div class="filter-item">
-        <label>Tipo</label>
+        <label>Tipo de producto</label>
         <select [(ngModel)]="filtroTipo">
-          <option value="">Todos</option>
+          <option value="">Todos los tipos</option>
           @for (tipo of tiposCaja; track tipo) {
             <option [value]="tipo">{{ formatearTipoCaja(tipo) }}</option>
           }
@@ -28,7 +28,7 @@
       <div class="filter-item">
         <label>Ordenar por</label>
         <select [(ngModel)]="ordenarPor">
-          <option value="">Sin orden</option>
+          <option value="">Sin orden particular</option>
           <option value="nombre-asc">Nombre (A - Z)</option>
           <option value="nombre-desc">Nombre (Z - A)</option>
           <option value="precio-asc">Precio (Menor a Mayor)</option>
@@ -38,39 +38,50 @@
     </div>
 
     <div class="filters-actions">
-      <button class="btn btn--outline btn--sm" (click)="limpiarFiltros()">Limpiar Filtros</button>
+      <button class="btn-outline-sm" (click)="limpiarFiltros()">Limpiar Filtros</button>
     </div>
   </div>
 
   @if (cargando) {
-    <p class="text-muted">Cargando productos...</p>
+    <div class="state-container">
+      <p class="text-muted">Cargando productos del catálogo...</p>
+    </div>
   } @else if (productosFiltrados.length === 0) {
-    <p class="sin-resultados">No se encontraron productos con esos filtros.</p>
+    <div class="state-container">
+      <p class="sin-resultados">No se encontraron productos que coincidan con los filtros seleccionados.</p>
+    </div>
   } @else {
     <div class="productos-grid">
       @for (producto of productosFiltrados; track producto.id) {
-        <a class="producto-card" [routerLink]="['/productos', producto.id]">
-          <div class="producto-card__imagen">
-            @if (producto.imagenUrl) {
-              <img [src]="producto.imagenUrl" [alt]="producto.nombre" />
-            } @else {
-              <span class="producto-card__placeholder">Sin imagen</span>
-            }
-          </div>
-          <div class="producto-card__body">
-            <span class="type-pill">{{ formatearTipoCaja(producto.tipoCaja) }}</span>
-            <h3 class="producto-card__nombre">{{ producto.nombre }}</h3>
-            <p class="producto-card__coleccion">{{ producto.coleccionSet }}</p>
-            <div class="producto-card__footer">
-              <span class="price">${{ formatearPrecio(producto.precio) }}</span>
-              @if (producto.stock > 0) {
-                <span class="stock-pill stock-pill--ok">Disponible</span>
+        <article class="producto-card">
+          <a class="producto-card-link" [routerLink]="['/productos', producto.id]">
+            <div class="card-img-wrapper">
+              @if (producto.imagenUrl) {
+                <img [src]="producto.imagenUrl" [alt]="producto.nombre" class="producto-img" />
               } @else {
-                <span class="stock-pill stock-pill--out">Sin stock</span>
+                <span class="img-placeholder">Sin imagen</span>
               }
             </div>
-          </div>
-        </a>
+            <div class="producto-info">
+              <div class="card-top-tags">
+                <span class="type-pill">{{ formatearTipoCaja(producto.tipoCaja) }}</span>
+                @if (producto.stock > 0) {
+                  <span class="stock-pill stock-pill--ok">Disponible</span>
+                } @else {
+                  <span class="stock-pill stock-pill--out">Sin stock</span>
+                }
+              </div>
+
+              <h3 class="product-name" [title]="producto.nombre">{{ producto.nombre }}</h3>
+              <p class="product-collection">{{ producto.coleccionSet }}</p>
+
+              <div class="card-footer-row">
+                <span class="product-price">${{ formatearPrecio(producto.precio) }}</span>
+                <span class="btn-detalles">Ver detalles &rarr;</span>
+              </div>
+            </div>
+          </a>
+        </article>
       }
     </div>
   }
