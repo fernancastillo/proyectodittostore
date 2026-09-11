@@ -47,4 +47,15 @@ public class AdminController {
     public Object obtenerUsuarios() {
         return usuariosClient.obtenerTodos();
     }
+
+    @PutMapping("/usuarios/{id}")
+    public Object actualizarUsuario(@PathVariable Long id, @RequestBody Object dto) {
+        return usuariosClient.actualizarUsuario(id, dto);
+    }
+
+    @DeleteMapping("/usuarios/{id}")
+    public ResponseEntity<Void> eliminarUsuario(@PathVariable Long id) {
+        usuariosClient.eliminarUsuario(id);
+        return ResponseEntity.noContent().build();
+    }
 }
