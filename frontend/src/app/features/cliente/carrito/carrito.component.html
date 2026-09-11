@@ -64,5 +64,32 @@
     </table>
 
     <h3>Total: {{ totalCarrito() }}</h3>
+    @if (c.items.length > 0 && !pedidoConfirmado()) {
+      <hr>
+      <h3>Pagar pedido</h3>
+
+      <label>
+        Dirección de envío:
+        <input type="text" [(ngModel)]="direccionEnvio" placeholder="Calle, número, comuna">
+      </label>
+
+      <div>
+        <button (click)="pagarCon('PAYPAL')" [disabled]="pagando()">
+          {{ pagando() ? 'Procesando...' : 'Pagar con PayPal' }}
+        </button>
+        <button (click)="pagarCon('TARJETA')" [disabled]="pagando()">
+          {{ pagando() ? 'Procesando...' : 'Pagar con tarjeta imaginaria' }}
+        </button>
+      </div>
+    }
+
+    @if (pedidoConfirmado(); as p) {
+      <hr>
+      <h3>¡Pedido confirmado!</h3>
+      <p>Pedido #{{ p.pedidoId }} — Estado: {{ p.estadoPedido }}</p>
+      <p>Pago #{{ p.pagoId }} — Estado: {{ p.estadoPago }} — Método: {{ p.metodoPago }}</p>
+      <p>Transacción: {{ p.transaccionId }}</p>
+      <p>Total pagado: {{ p.total }}</p>
+}
   }
 </div>
