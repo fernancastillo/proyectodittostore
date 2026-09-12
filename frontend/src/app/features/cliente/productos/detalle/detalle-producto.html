@@ -1,0 +1,113 @@
+<div class="detalle-page">
+  <div class="volver-wrapper">
+    <a class="btn-volver" [routerLink]="['/productos']">&larr; Volver al catálogo</a>
+  </div>
+
+  @if (cargando) {
+  <div class="state-container">
+    <p class="text-muted">Cargando información del producto...</p>
+  </div>
+  } @else if (error) {
+  <div class="alert alert-error">{{ error }}</div>
+  } @else if (producto) {
+  <div class="detalle-card">
+    <div class="detalle-imagen-wrapper">
+      @if (producto.imagenUrl) {
+      <img [src]="producto.imagenUrl" [alt]="producto.nombre" class="detalle-img" />
+      } @else {
+      <img src="/branding/dittostore-logo.jpg" [alt]="producto.nombre" class="detalle-img" />
+      }
+    </div>
+
+    <div class="detalle-info">
+      <div class="badge-row">
+        <span class="type-pill">{{ formatearTipoCaja(producto.tipoCaja) }}</span>
+        @if (producto.stock > 0) {
+        <span class="stock-pill stock-pill--ok">{{ producto.stock }} disponibles</span>
+        } @else {
+        <span class="stock-pill stock-pill--out">Sin stock</span>
+        }
+      </div>
+
+      <h1 class="producto-titulo">{{ producto.nombre }}</h1>
+      <p class="producto-coleccion">{{ producto.coleccionSet }}</p>
+
+      <p class="producto-precio">${{ formatearPrecio(producto.precio) }}</p>
+
+      <div class="producto-descripcion-box">
+        <h3>Descripción</h3>
+        <p>{{ producto.descripcion }}</p>
+      </div>
+
+      <div class="producto-specs-box">
+        <h3>Especificaciones</h3>
+        <dl class="specs-grid">
+          <div class="spec-item">
+            <dt>Idioma</dt>
+            <dd>{{ formatearIdioma(producto.idioma) }}</dd>
+          </div>
+          @if (producto.cantidadSobres) {
+          <div class="spec-item">
+            <dt>Sobres por caja</dt>
+            <dd>{{ producto.cantidadSobres }}</dd>
+          </div>
+          }
+          @if (producto.cartasPorSobre) {
+          <div class="spec-item">
+            <dt>Cartas por sobre</dt>
+            <dd>{{ producto.cartasPorSobre }}</dd>
+          </div>
+          }
+        </dl>
+      </div>
+
+      <div class="carrito-actions">
+        <button class="btn btn-primary btn-large" [disabled]="!puedeAgregarAlCarrito || agregandoAlCarrito"
+          (click)="agregarAlCarrito()">
+          🛒 {{ agregandoAlCarrito ? 'Agregando...' : 'Agregar al carrito' }}
+        </button>
+
+        @if (producto.stock <= 0) { <p class="carrito-aviso">Este producto no cuenta con stock disponible en este
+          momento.</p>
+          } @else if (!isLoggedIn) {
+          <p class="carrito-aviso">Debes iniciar sesión para agregar productos al carrito.</p>
+          }
+
+          @if (mensajeCarrito) {
+          <div class="carrito-mensaje mensaje-ok">{{ mensajeCarrito }}</div>
+          }
+          @if (errorCarrito) {
+          <div class="carrito-mensaje mensaje-error">{{ errorCarrito }}</div>
+          }
+      </div>
+    </div>
+  </div>
+
+  <section class="reviews-section">
+    <div class="reviews-header">
+      <h2>Reviews y opiniones de usuarios</h2>
+    </div>
+
+    @if (cargandoReviews) {
+    <p class="text-muted">Cargando valoraciones...</p>
+    } @else if (reviews.length === 0) {
+    <div class="reviews-vacio-box">
+      <p>Aún no hay reseñas registradas para este producto. ¡Sé el primero en opinar!</p>
+    </div>
+    } @else {
+    <div class="reviews-grid">
+      @for (review of reviews; track review.id) {
+      <article class="review-card">
+        <div class="review-card-header">
+          <span class="review-rating">⭐ {{ review.calificacion }} / 5</span>
+        </div>
+        @if (review.comentario) {
+        <p class="review-comentario">{{ review.comentario }}</p>
+        }
+      </article>
+      }
+    </div>
+    }
+  </section>
+  }
+</div>

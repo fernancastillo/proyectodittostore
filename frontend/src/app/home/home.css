@@ -1,0 +1,465 @@
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&display=swap');
+
+:host {
+  display: block;
+  background-color: #ffffff;
+}
+
+:host *, :host *::before, :host *::after {
+  box-sizing: border-box;
+}
+
+.hero-pokemon {
+  background-color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4rem;
+  padding: 4rem 2rem;
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+.hero-content {
+  flex: 1 1 420px;
+  max-width: 520px;
+}
+
+.hero-title {
+  font-family: 'Fredoka', 'Segoe UI', sans-serif;
+  font-size: 2.9rem;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  margin-bottom: 1.2rem;
+  line-height: 1.15;
+  color: #1f2937;
+  background: linear-gradient(100deg, #7c3aed 0%, #d946ef 40%, #ec4899 65%, #f59e0b 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero-pokemon p {
+  font-size: 1.15rem;
+  color: #4b5563;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+.hero-buttons {
+  display: flex;
+  justify-content: flex-start;
+  gap: 1rem;
+}
+
+/* --- Botón "Explorar catálogo" estilo pokébola --- */
+.hero-cta {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  background: linear-gradient(135deg, #8b5cf6, #ec4899);
+  border: none;
+  color: #ffffff !important;
+  overflow: hidden;
+  isolation: isolate;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.hero-cta-icon {
+  display: inline-flex;
+  line-height: 0;
+}
+
+.hero-cta-icon svg {
+  display: block;
+  transition: transform 0.6s ease;
+}
+
+.hero-cta:hover .hero-cta-icon svg {
+  transform: rotate(200deg);
+}
+
+.hero-cta::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(135deg, #f59e0b, #ec4899, #8b5cf6);
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+
+.hero-cta:hover::after {
+  opacity: 1;
+}
+
+.hero-cta:hover {
+  box-shadow: 0 10px 24px rgba(139, 92, 246, 0.35);
+  transform: translateY(-1px);
+}
+
+/* --- Cartas cruzadas con brillo prismático --- */
+.hero-cards {
+  position: relative;
+  flex: 0 0 auto;
+  width: clamp(260px, 30vw, 360px);
+  height: clamp(320px, 36vw, 440px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-cards-glow {
+  position: absolute;
+  inset: -20%;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 0deg,
+    #ff6ec7, #ffb703, #8b5cf6, #38bdf8, #34d1c9, #ff6ec7
+  );
+  filter: blur(55px);
+  opacity: 0.5;
+  animation: hero-glow-spin 14s linear infinite;
+  z-index: 0;
+}
+
+@keyframes hero-glow-spin {
+  to { transform: rotate(360deg); }
+}
+
+.hero-card {
+  position: absolute;
+  width: 62%;
+  aspect-ratio: 5 / 7;
+  object-fit: cover;
+  border-radius: 14px;
+  box-shadow: 0 18px 40px rgba(31, 41, 55, 0.25);
+  z-index: 1;
+  overflow: hidden;
+}
+
+.hero-card-back {
+  transform: rotate(-14deg) translate(-28%, 6%);
+  z-index: 1;
+}
+
+.hero-card-front {
+  transform: rotate(11deg) translate(24%, -4%);
+  z-index: 2;
+}
+
+/* barrido de luz tipo carta foil */
+.hero-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    115deg,
+    transparent 40%,
+    rgba(255, 255, 255, 0.65) 50%,
+    transparent 60%
+  );
+  background-size: 250% 250%;
+  background-position: -100% -100%;
+  mix-blend-mode: overlay;
+  animation: hero-card-shine 4.5s ease-in-out infinite;
+}
+
+.hero-card-front::after {
+  animation-delay: 0.6s;
+}
+
+@keyframes hero-card-shine {
+  0%, 15% { background-position: -100% -100%; }
+  55%, 100% { background-position: 100% 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-cards-glow,
+  .hero-card::after {
+    animation: none;
+  }
+}
+
+@media (max-width: 860px) {
+  .hero-pokemon {
+    flex-direction: column;
+    text-align: center;
+    padding: 3rem 1.5rem 1rem;
+  }
+
+  .hero-content {
+    max-width: 100%;
+  }
+
+  .hero-buttons {
+    justify-content: center;
+  }
+
+  .hero-cards {
+    width: clamp(240px, 70vw, 320px);
+    height: clamp(300px, 84vw, 400px);
+  }
+}
+
+/* --- Sección "Las cartas más buscadas" (carrusel automático, solo imagen) --- */
+.trending-section {
+  background-color: #ffffff;
+  padding: 1rem 2rem 3.5rem;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.trending-carousel {
+  position: relative;
+  overflow: hidden;
+  padding: 1.5rem 0;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent);
+}
+
+.trending-track {
+  display: flex;
+  gap: 1.5rem;
+  width: max-content;
+  animation: trending-scroll 22s linear infinite;
+}
+
+.trending-carousel:hover .trending-track {
+  animation-play-state: paused;
+}
+
+@keyframes trending-scroll {
+  from { transform: translateX(-50%); }
+  to { transform: translateX(0); }
+}
+
+.trending-card {
+  flex: 0 0 auto;
+  width: 140px;
+  border-radius: 14px;
+  overflow: hidden;
+  background-color: #fafafa;
+  border: 1px solid #f3f4f6;
+  box-shadow: 0 6px 16px rgba(31, 41, 55, 0.1);
+  transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease;
+}
+
+.trending-card:hover {
+  transform: scale(1.18);
+  box-shadow: 0 22px 40px rgba(139, 92, 246, 0.35);
+  border-color: #df94ff;
+  z-index: 2;
+  position: relative;
+}
+
+.trending-img {
+  width: 100%;
+  aspect-ratio: 5 / 7;
+  object-fit: cover;
+  display: block;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .trending-track {
+    animation: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .trending-card {
+    width: 105px;
+  }
+}
+
+.btn-large {
+  padding: 0.8rem 2rem;
+  font-size: 1.05rem;
+  border-radius: 8px;
+}
+
+.featured-section {
+  background-color: #ffffff;
+  padding: 2rem 2rem 5rem;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.section-title {
+  font-family: 'Fredoka', 'Segoe UI', sans-serif;
+  font-size: 2.1rem;
+  font-weight: 700;
+  margin-bottom: 0.6rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: linear-gradient(100deg, #7c3aed 0%, #ec4899 55%, #f59e0b 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.section-title-icon {
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
+  color: #f59e0b;
+}
+
+.section-subtitle {
+  color: #6b7280;
+  font-size: 1.05rem;
+  font-weight: 500;
+}
+
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 1.5rem;
+  justify-content: center;
+  align-items: stretch;
+}
+
+@media (min-width: 1100px) {
+  .products-grid {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+.product-card {
+  background: #ffffff;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+  border: 1px solid #f3f4f6;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.product-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 28px rgba(223, 148, 255, 0.3);
+  border-color: #df94ff;
+}
+
+.card-img-wrapper {
+  width: 100%;
+  height: 200px;
+  background-color: #fafafa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.product-img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  margin: 0 auto;
+  display: block;
+  transition: transform 0.3s ease;
+}
+
+.product-card:hover .product-img {
+  transform: scale(1.06);
+}
+
+.no-image {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  color: #9ca3af;
+  font-size: 0.85rem;
+  font-weight: 500;
+  width: 100%;
+  height: 100%;
+}
+
+.product-info {
+  padding: 1.25rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  flex-grow: 1;
+  width: 100%;
+}
+
+.product-name {
+  font-size: 0.95rem;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  line-height: 1.4;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  text-align: center;
+  width: 100%;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 2.7rem;
+}
+
+.product-price {
+  font-size: 1.25rem;
+  color: #8b5cf6;
+  font-weight: 800;
+  margin-bottom: 1rem;
+  margin-top: auto;
+  text-align: center;
+  width: 100%;
+}
+
+.w-100 {
+  width: 100%;
+  justify-content: center;
+}
+
+.btn-secondary {
+  background-color: #f9fafb;
+  color: #374151;
+  border: 1px solid #e5e7eb;
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  transition: all 0.2s;
+}
+
+.btn-secondary:hover {
+  background-color: #df94ff;
+  color: #ffffff;
+  border-color: #df94ff;
+}
+
+@media (max-width: 640px) {
+  .hero-title {
+    font-size: 2.1rem;
+  }
+
+  .section-title {
+    font-size: 1.6rem;
+    gap: 0.4rem;
+  }
+
+  .section-title-icon {
+    width: 20px;
+    height: 20px;
+  }
+}

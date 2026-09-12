@@ -2,13 +2,20 @@ package com.dittostore.businessdomain.productoservice.service;
 
 import com.dittostore.businessdomain.productoservice.dto.ProductoRequestDTO;
 import com.dittostore.businessdomain.productoservice.dto.ProductoResponseDTO;
+import com.dittostore.businessdomain.productoservice.dto.ReducirStockItemDTO;
+import com.dittostore.businessdomain.productoservice.dto.ReducirStockRequestDTO;
 import com.dittostore.businessdomain.productoservice.entity.Producto;
 import com.dittostore.businessdomain.productoservice.exception.ProductoNotFoundException;
+import com.dittostore.businessdomain.productoservice.exception.StockInsuficienteException;
 import com.dittostore.businessdomain.productoservice.repository.ProductoRepository;
+import org.springframework.transaction.annotation.Transactional;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -61,6 +68,30 @@ public class ProductoServiceImpl implements ProductoService {
     public void eliminar(Long id) {
         Producto producto = buscarOLanzar(id);
         productoRepository.delete(producto);
+    }
+
+    @Override
+    @Transactional 
+    public void reducirStock(ReducirStockRequestDTO dto) {
+        Map<Long, Integer> cantidadPorProducto = new LinkedHashMap<>();
+        for (ReducirStockItemDTO item : dto.getItems()) {
+            cantidadPorProducto.merge(item.getProductoId(), item.getCantidad(), Integer::sum);
+        }
+
+        Map<Long, Producto> productos = new LinkedHashMap<>();
+        for (Map.Entry<Long, Integer> entry : cantidadPorProducto.entrySet()) {
+            Producto producto = buscarOLanzar(entry.getKey());
+            if (producto.getStock() == null || producto.getStock() < entry.getValue()) {
+                throw new StockInsuficienteException(producto.getNombre(), producto.getStock(), entry.getValue());
+            }
+            productos.put(entry.getKey(), producto);
+        }
+
+        for (Map.Entry<Long, Integer> entry : cantidadPorProducto.entrySet()) {
+            Producto producto = productos.get(entry.getKey());
+            producto.setStock(producto.getStock() - entry.getValue());
+            productoRepository.save(producto);
+        }
     }
 
     private Producto buscarOLanzar(Long id) {

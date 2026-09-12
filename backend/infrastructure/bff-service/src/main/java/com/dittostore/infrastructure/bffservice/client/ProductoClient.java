@@ -1,5 +1,8 @@
 package com.dittostore.infrastructure.bffservice.client;
 
+import com.dittostore.infrastructure.bffservice.dto.ProductoDTO;
+import com.dittostore.infrastructure.bffservice.dto.ReducirStockRequestDTO;
+
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,6 +15,9 @@ public interface ProductoClient {
     @GetMapping("/api/productos/{id}")
     Object obtenerProductoPorId(@PathVariable Long id);
 
+    @GetMapping("/api/productos/{id}")
+    ProductoDTO obtenerDetalleProducto(@PathVariable Long id);
+
     @PostMapping("/api/productos")
     Object crearProducto(@RequestBody Object dto);
 
@@ -20,4 +26,7 @@ public interface ProductoClient {
 
     @DeleteMapping("/api/productos/{id}")
     void eliminarProducto(@PathVariable Long id);
+
+    @PatchMapping("/api/productos/stock/reducir")
+    void reducirStock(@RequestBody ReducirStockRequestDTO request);
 }

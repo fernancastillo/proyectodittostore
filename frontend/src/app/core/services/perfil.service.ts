@@ -14,6 +14,13 @@ export interface Perfil {
   rol: 'CLIENTE' | 'ADMIN';
 }
 
+export interface PerfilEditable {
+  nombre: string;
+  apellido: string;
+  telefono: string;
+  direccion: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class PerfilService {
   private http = inject(HttpClient);
@@ -33,6 +40,27 @@ export class PerfilService {
       );
     }
     return this.perfil$;
+  }
+
+  actualizarPerfil(datos: PerfilEditable): Observable<Perfil> {
+    const actual = this.perfil();
+    if (!actual) {
+      throw new Error('No hay un perfil cargado para actualizar');
+    }
+
+    const body = {
+      azureAdObjectId: actual.azureAdObjectId,
+      nombre: datos.nombre,
+      apellido: datos.apellido,
+      email: actual.email,
+      telefono: datos.telefono || null,
+      direccion: datos.direccion || null,
+      rol: actual.rol
+    };
+
+    return this.http
+      .put<Perfil>(`${environment.apiConfig.gatewayUri}/api/usuarios/${actual.id}`, body)
+      .pipe(tap((perfilActualizado) => this.perfil.set(perfilActualizado)));
   }
 
   limpiar(): void {

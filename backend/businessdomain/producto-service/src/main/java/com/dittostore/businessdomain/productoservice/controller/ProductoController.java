@@ -2,6 +2,7 @@ package com.dittostore.businessdomain.productoservice.controller;
 
 import com.dittostore.businessdomain.productoservice.dto.ProductoRequestDTO;
 import com.dittostore.businessdomain.productoservice.dto.ProductoResponseDTO;
+import com.dittostore.businessdomain.productoservice.dto.ReducirStockRequestDTO;
 import com.dittostore.businessdomain.productoservice.service.ProductoService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -36,13 +37,19 @@ public class ProductoController {
 
     @PutMapping("/{id}")
     public ResponseEntity<ProductoResponseDTO> actualizar(@PathVariable Long id,
-                                                           @Valid @RequestBody ProductoRequestDTO dto) {
+            @Valid @RequestBody ProductoRequestDTO dto) {
         return ResponseEntity.ok(productoService.actualizar(id, dto));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminar(@PathVariable Long id) {
         productoService.eliminar(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/stock/reducir")
+    public ResponseEntity<Void> reducirStock(@Valid @RequestBody ReducirStockRequestDTO dto) {
+        productoService.reducirStock(dto);
         return ResponseEntity.noContent().build();
     }
 }

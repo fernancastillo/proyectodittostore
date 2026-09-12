@@ -1,0 +1,209 @@
+<section class="perfil-page">
+  <div class="perfil-header">
+    <h1 class="page-title">Mi cuenta</h1>
+    <p class="page-subtitle">Administra tus datos y revisa tus pedidos</p>
+  </div>
+
+  @if (perfil(); as p) {
+  <div class="perfil-grid">
+    @if (p.rol === 'ADMIN') {
+    <div class="admin-banner">
+      <div class="admin-banner-info">
+        <span class="admin-badge">ADMINISTRADOR</span>
+        <p>Tienes acceso al panel de gestión del sistema</p>
+      </div>
+      <a [routerLink]="['/admin']" class="btn-admin">
+        <svg class="admin-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+          fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path
+            d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
+          <circle cx="12" cy="12" r="3" />
+        </svg>
+        <span>Ir al Dashboard Admin</span>
+        <span class="btn-arrow">&rarr;</span>
+      </a>
+    </div>
+    }
+
+    <div class="perfil-card">
+      <div class="card-header-actions">
+        <h2>Datos personales</h2>
+        @if (!editando()) {
+        <button class="btn-text" (click)="iniciarEdicion()">Editar</button>
+        }
+      </div>
+
+      @if (!editando()) {
+      <div class="datos-lista">
+        <p><strong>Nombre:</strong> {{ p.nombre }} {{ p.apellido }}</p>
+        <p><strong>Email:</strong> {{ p.email }}</p>
+        <p><strong>Teléfono:</strong> {{ p.telefono || 'No registrado' }}</p>
+        <p><strong>Dirección:</strong> {{ p.direccion || 'No registrada' }}</p>
+      </div>
+      } @else {
+      <form #perfilForm="ngForm" (ngSubmit)="guardarPerfil(perfilForm)" class="perfil-form">
+        @if (errorPerfil()) {
+        <div class="alert alert-error">{{ errorPerfil() }}</div>
+        }
+
+        <div class="form-group">
+          <label for="nombre">Nombre *</label>
+          <input type="text" id="nombre" name="nombre" [(ngModel)]="datosEditables.nombre" #nombreCtrl="ngModel"
+            required minlength="3" />
+          @if (nombreCtrl.invalid && nombreCtrl.touched) {
+          <span class="field-error">El nombre debe tener al menos 3 caracteres</span>
+          }
+        </div>
+
+        <div class="form-group">
+          <label for="apellido">Apellido *</label>
+          <input type="text" id="apellido" name="apellido" [(ngModel)]="datosEditables.apellido" #apellidoCtrl="ngModel"
+            required minlength="3" />
+          @if (apellidoCtrl.invalid && apellidoCtrl.touched) {
+          <span class="field-error">El apellido debe tener al menos 3 caracteres</span>
+          }
+        </div>
+
+        <div class="form-group">
+          <label for="telefono">Teléfono</label>
+          <input type="text" id="telefono" name="telefono" [(ngModel)]="datosEditables.telefono" #telefonoCtrl="ngModel"
+            pattern="^\+569\d{8}$" placeholder="+56912345678" />
+          @if (telefonoCtrl.invalid && telefonoCtrl.touched) {
+          <span class="field-error">Debe tener el formato +569 seguido de 8 números</span>
+          }
+        </div>
+
+        <div class="form-group">
+          <label for="direccion">Dirección</label>
+          <input type="text" id="direccion" name="direccion" [(ngModel)]="datosEditables.direccion"
+            placeholder="Ej: Av. Providencia 1234, Santiago" />
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" (click)="cancelarEdicion()">Cancelar</button>
+          <button type="submit" class="btn btn-primary" [disabled]="guardandoPerfil()">
+            @if (guardandoPerfil()) { <span>Guardando...</span> } @else { <span>Guardar cambios</span> }
+          </button>
+        </div>
+      </form>
+      }
+    </div>
+
+    <div class="perfil-card">
+      <h2>Mis pedidos</h2>
+
+      @if (errorPedidos()) {
+      <div class="alert alert-error">{{ errorPedidos() }}</div>
+      }
+
+      @if (cargandoPedidos()) {
+      <p class="cargando-texto">Cargando pedidos...</p>
+      } @else if (pedidos().length === 0) {
+      <p class="cargando-texto">Todavía no tienes pedidos.</p>
+      } @else {
+      <div class="pedidos-lista">
+        @for (pedido of pedidos(); track pedido.id) {
+        <div class="pedido-card">
+          <div class="pedido-card-header">
+            <span>Pedido #{{ pedido.id }}</span>
+            <span class="badge" [class.badge-success]="pedido.estado === 'ENTREGADO'">
+              {{ pedido.estado }}
+            </span>
+          </div>
+          <p class="pedido-fecha">{{ pedido.fechaPedido | date:'dd/MM/yyyy HH:mm' }}</p>
+
+          <div class="pedido-items">
+            @for (item of pedido.items; track item.id) {
+            <div class="pedido-item">
+              <div class="pedido-item-info">
+                @if (item.producto?.imagenUrl) {
+                <img [src]="item.producto?.imagenUrl" [alt]="item.producto?.nombre || 'Producto'">
+                } @else {
+                <div class="item-no-image">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                    <circle cx="8.5" cy="8.5" r="1.5" />
+                    <polyline points="21 15 16 10 5 21" />
+                  </svg>
+                </div>
+                }
+                <div>
+                  <p class="item-nombre">{{ item.producto?.nombre || ('Producto #' + item.productoId) }}</p>
+                  <p class="item-cantidad">{{ item.cantidad }} x ${{ item.precioUnitario | number:'1.0-0' }}</p>
+                </div>
+              </div>
+              <span class="item-subtotal">${{ item.subtotal | number:'1.0-0' }}</span>
+            </div>
+
+            @if (pedido.estado === 'ENTREGADO') {
+            <div class="review-zona">
+              @if (!editandoReview(item.productoId)) {
+              @if (reviewDe(item.productoId); as review) {
+              <div class="review-existente">
+                <span class="review-estrellas">
+                  {{ '★'.repeat(review.calificacion) }}{{ '☆'.repeat(5 - review.calificacion) }}
+                </span>
+                <p class="review-comentario">{{ review.comentario }}</p>
+                <button class="btn-text" (click)="abrirFormularioReview(item.productoId)">
+                  Editar review
+                </button>
+              </div>
+              } @else {
+              <button class="btn-text" (click)="abrirFormularioReview(item.productoId)">
+                Dejar una review
+              </button>
+              }
+              } @else {
+              <form class="review-form" (ngSubmit)="guardarReview(item.productoId, p.id)">
+                <div class="review-form-header">
+                  <span class="review-form-title">Escribir reseña</span>
+                </div>
+
+                @if (errorReview()) {
+                <div class="alert alert-error">{{ errorReview() }}</div>
+                }
+
+                <div class="review-field">
+                  <label>Calificación</label>
+                  <select name="calificacion-{{ item.productoId }}"
+                    [(ngModel)]="formsReview[item.productoId].calificacion">
+                    <option [ngValue]="5">5 ★★★★★ (Excelente)</option>
+                    <option [ngValue]="4">4 ★★★★☆ (Muy bueno)</option>
+                    <option [ngValue]="3">3 ★★★☆☆ (Bueno)</option>
+                    <option [ngValue]="2">2 ★★☆☆☆ (Regular)</option>
+                    <option [ngValue]="1">1 ★☆☆☆☆ (Malo)</option>
+                  </select>
+                </div>
+
+                <div class="review-field">
+                  <label>Comentario</label>
+                  <textarea name="comentario-{{ item.productoId }}"
+                    [(ngModel)]="formsReview[item.productoId].comentario" rows="3" maxlength="1000"
+                    placeholder="Cuéntanos qué te pareció el producto"></textarea>
+                </div>
+
+                <div class="form-actions">
+                  <button type="button" class="btn btn-secondary btn-sm"
+                    (click)="cerrarFormularioReview(item.productoId)">Cancelar</button>
+                  <button type="submit" class="btn btn-primary btn-sm"
+                    [disabled]="guardandoReview() === item.productoId">
+                    Guardar review
+                  </button>
+                </div>
+              </form>
+              }
+            </div>
+            }
+            }
+          </div>
+        </div>
+        }
+      </div>
+      }
+    </div>
+  </div>
+  } @else {
+  <p class="cargando-texto">Cargando perfil...</p>
+  }
+</section>

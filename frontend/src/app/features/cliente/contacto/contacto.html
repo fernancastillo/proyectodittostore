@@ -1,0 +1,166 @@
+<div class="contacto-page">
+  <svg class="contacto-watermark" viewBox="0 0 48 48" fill="currentColor" aria-hidden="true">
+    <path d="M24 6c-8 0-13 5-13 12 0 3 1 5 2.5 7-2 1-3.5 3-3.5 5.5C10 35 15 40 24 40s14-5 14-9.5c0-2.5-1.5-4.5-3.5-5.5C36 23 37 21 37 18c0-7-5-12-13-12Z"/>
+  </svg>
+
+  <div class="contacto-header">
+    <h1 class="page-title">Contacto</h1>
+    <p class="page-subtitle">¿Tienes alguna duda o consulta? Estamos aquí para ayudarte</p>
+  </div>
+
+  <div class="contacto-grid">
+    <!-- Información de contacto y soporte -->
+    <div class="contacto-info-card">
+      <h2>Atención al cliente</h2>
+      <p class="info-descripcion">
+        ¿Quieres consultar por el estado de tu pedido, tienes dudas sobre el stock de alguna Booster Box o buscas una carta especial? Escríbenos y te responderemos a la brevedad.
+      </p>
+
+      <div class="info-list">
+        <div class="info-item">
+          <div class="info-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+              <polyline points="22,6 12,13 2,6"/>
+            </svg>
+          </div>
+          <div>
+            <strong>Correo Electrónico</strong>
+            <p>contacto&#64;dittostore.com</p>
+          </div>
+        </div>
+
+        <div class="info-item">
+          <div class="info-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <polyline points="12 6 12 12 16 14"/>
+            </svg>
+          </div>
+          <div>
+            <strong>Horario de Atención</strong>
+            <p>Lunes a Viernes: 09:00 - 18:00 hrs</p>
+          </div>
+        </div>
+
+        <div class="info-item">
+          <div class="info-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+              <circle cx="12" cy="10" r="3"/>
+            </svg>
+          </div>
+          <div>
+            <strong>Ubicación</strong>
+            <p>Santiago, Chile (Envíos a todo el país)</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-badge-box">
+        <span class="badge-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+          </svg>
+        </span>
+        <p>Respondemos la mayoría de los mensajes en menos de 24 horas hábiles.</p>
+      </div>
+    </div>
+
+    <!-- Formulario de contacto -->
+    <div class="form-card">
+      @if (enviado) {
+        <div class="success-box">
+          <div class="success-icon-wrap">
+            <img src="branding/ditto-contacto.jpg" alt="Mensaje enviado" class="success-ditto-img">
+            <span class="success-check-badge">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </span>
+          </div>
+          <h2>¡Mensaje enviado con éxito!</h2>
+          <p>
+            Hemos recibido tu consulta, <strong>{{ nombre }}</strong>. Te responderemos al correo <strong>{{ email }}</strong> a la brevedad.
+          </p>
+          <button class="btn btn-primary" (click)="reiniciarFormulario()">
+            Enviar otro mensaje
+          </button>
+        </div>
+      } @else {
+        <form (ngSubmit)="enviarFormulario()" class="contacto-form" novalidate>
+          <div class="form-heading">
+            <img src="branding/ditto-contacto.jpg" alt="Ditto con audífonos de soporte" class="form-heading-img">
+            <h2>Envíanos un mensaje</h2>
+          </div>
+
+          @if (error) {
+            <div class="alert alert-error">{{ error }}</div>
+          }
+
+          <div class="form-group">
+            <label for="nombre">Nombre completo *</label>
+            <input
+              type="text"
+              id="nombre"
+              name="nombre"
+              [(ngModel)]="nombre"
+              placeholder="Ej: Ash Ketchum"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="email">Correo electrónico *</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              [(ngModel)]="email"
+              placeholder="ejemplo@correo.com"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="asunto">Asunto</label>
+            <select id="asunto" name="asunto" [(ngModel)]="asunto">
+              <option value="Consulta general">Consulta general</option>
+              <option value="Estado de pedido">Estado de pedido</option>
+              <option value="Duda sobre un producto">Duda sobre un producto</option>
+              <option value="Sugerencia o reclamo">Sugerencia o reclamo</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="mensaje">Mensaje *</label>
+            <textarea
+              id="mensaje"
+              name="mensaje"
+              rows="5"
+              [(ngModel)]="mensaje"
+              placeholder="Escribe tu mensaje o consulta aquí..."
+              required
+            ></textarea>
+          </div>
+
+          <button
+            type="submit"
+            class="btn btn-primary btn-block"
+            [disabled]="enviando"
+          >
+            @if (enviando) {
+              <span>Enviando correo...</span>
+            } @else {
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="22" y1="2" x2="11" y2="13"/>
+                <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+              </svg>
+              <span>Enviar Mensaje</span>
+            }
+          </button>
+        </form>
+      }
+    </div>
+  </div>
+</div>

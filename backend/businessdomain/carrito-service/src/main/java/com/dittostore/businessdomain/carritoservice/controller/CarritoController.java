@@ -45,6 +45,11 @@ public class CarritoController {
         return ResponseEntity.ok(carritoService.obtenerPorUsuario(usuarioId));
     }
 
+    @GetMapping("/usuario/{usuarioId}/activo")
+    public ResponseEntity<CarritoResponseDTO> obtenerOCrearActivo(@PathVariable Long usuarioId) {
+        return ResponseEntity.ok(carritoService.obtenerOCrearActivoPorUsuario(usuarioId));
+    }
+
     @GetMapping
     public ResponseEntity<List<CarritoResponseDTO>> obtenerTodos() {
         return ResponseEntity.ok(carritoService.obtenerTodos());
@@ -59,6 +64,21 @@ public class CarritoController {
     @DeleteMapping("/{id}/items/{itemId}")
     public ResponseEntity<CarritoResponseDTO> eliminarItem(@PathVariable Long id, @PathVariable Long itemId) {
         return ResponseEntity.ok(carritoService.eliminarItem(id, itemId));
+    }
+
+    @PatchMapping("/{id}/items/{itemId}/incrementar")
+    public ResponseEntity<CarritoResponseDTO> incrementarItem(@PathVariable Long id, @PathVariable Long itemId) {
+        return ResponseEntity.ok(carritoService.incrementarItem(id, itemId));
+    }
+
+    @PatchMapping("/{id}/items/{itemId}/decrementar")
+    public ResponseEntity<CarritoResponseDTO> decrementarItem(@PathVariable Long id, @PathVariable Long itemId) {
+        return ResponseEntity.ok(carritoService.decrementarItem(id, itemId));
+    }
+
+    @DeleteMapping("/{id}/items")
+    public ResponseEntity<CarritoResponseDTO> vaciarItems(@PathVariable Long id) {
+        return ResponseEntity.ok(carritoService.vaciarItems(id));
     }
 
     @PatchMapping("/{id}/estado")
