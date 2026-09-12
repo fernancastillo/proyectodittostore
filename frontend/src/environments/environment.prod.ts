@@ -8,7 +8,7 @@ export const environment = {
   },
   apiConfig: {
     scopes: ['api://dittostore.onmicrosoft.com/dittostore-backend/Store.Access'],
-    bffUri: 'https://kcuqhjbu95.execute-api.us-east-1.amazonaws.com/dev',
-    gatewayUri: 'https://kcuqhjbu95.execute-api.us-east-1.amazonaws.com/dev'
+    bffUri: 'https://xvrf5us4ma.execute-api.us-east-1.amazonaws.com/dev',
+    gatewayUri: 'https://xvrf5us4ma.execute-api.us-east-1.amazonaws.com/dev'
   }
 };
