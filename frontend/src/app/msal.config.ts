@@ -36,10 +36,16 @@ export function MSALGuardConfigFactory(): MsalGuardConfiguration {
 
 export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
   const protectedResourceMap = new Map<string, Array<string>>();
-  protectedResourceMap.set(environment.apiConfig.bffUri + '/*', environment.apiConfig.scopes);
+
+  protectedResourceMap.set(environment.apiConfig.bffUri + '/bff/*', environment.apiConfig.scopes);
+  protectedResourceMap.set(environment.apiConfig.bffUri + '/api/carritos/*', environment.apiConfig.scopes);
+  protectedResourceMap.set(environment.apiConfig.bffUri + '/api/pedidos/*', environment.apiConfig.scopes);
+  protectedResourceMap.set(environment.apiConfig.bffUri + '/api/pagos/*', environment.apiConfig.scopes);
+  protectedResourceMap.set(environment.apiConfig.bffUri + '/api/reviews/*', environment.apiConfig.scopes);
 
   return {
     interactionType: InteractionType.Redirect,
     protectedResourceMap
   };
+
 }
