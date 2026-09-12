@@ -30,11 +30,10 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(FeignException.class)
     public ResponseEntity<Map<String, Object>> handleFeign(FeignException ex) {
-        // OJO: esto imprime en la consola del BFF el error real devuelto por
-        // pedidos-service/pago-service (el mensaje de SU propio GlobalExceptionHandler).
         log.error("Error Feign [{}] -> {}", ex.status(), ex.contentUTF8(), ex);
         return ResponseEntity.status(HttpStatus.BAD_GATEWAY)
-                .body(buildBody(HttpStatus.BAD_GATEWAY, "Error comunicándose con un microservicio interno: " + ex.contentUTF8()));
+                .body(buildBody(HttpStatus.BAD_GATEWAY,
+                        "Error comunicándose con un microservicio interno: " + ex.contentUTF8()));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -51,6 +50,18 @@ public class GlobalExceptionHandler {
         log.error("Error no controlado en el BFF", ex);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(buildBody(HttpStatus.INTERNAL_SERVER_ERROR, "Error interno: " + ex.getMessage()));
+    }
+
+    @ExceptionHandler(StockInsuficienteException.class)
+    public ResponseEntity<Map<String, Object>> handleStockInsuficiente(StockInsuficienteException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(buildBody(HttpStatus.CONFLICT, ex.getMessage()));
+    }
+
+    @ExceptionHandler(FeignException.Conflict.class)
+    public ResponseEntity<Map<String, Object>> handleFeignConflict(FeignException.Conflict ex) {
+        log.error("Feign 409 -> {}", ex.contentUTF8());
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(buildBody(HttpStatus.CONFLICT, "Stock insuficiente para completar la operación."));
     }
 
     private Map<String, Object> buildBody(HttpStatus status, String mensaje) {

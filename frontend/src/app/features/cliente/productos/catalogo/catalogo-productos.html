@@ -5,7 +5,7 @@
   </div>
 
   @if (error) {
-    <div class="alert alert-error">{{ error }}</div>
+  <div class="alert alert-error">{{ error }}</div>
   }
 
   <div class="filters-panel">
@@ -20,7 +20,7 @@
         <select [(ngModel)]="filtroTipo">
           <option value="">Todos los tipos</option>
           @for (tipo of tiposCaja; track tipo) {
-            <option [value]="tipo">{{ formatearTipoCaja(tipo) }}</option>
+          <option [value]="tipo">{{ formatearTipoCaja(tipo) }}</option>
           }
         </select>
       </div>
@@ -43,46 +43,46 @@
   </div>
 
   @if (cargando) {
-    <div class="state-container">
-      <p class="text-muted">Cargando productos del catálogo...</p>
-    </div>
+  <div class="state-container">
+    <p class="text-muted">Cargando productos del catálogo...</p>
+  </div>
   } @else if (productosFiltrados.length === 0) {
-    <div class="state-container">
-      <p class="sin-resultados">No se encontraron productos que coincidan con los filtros seleccionados.</p>
-    </div>
+  <div class="state-container">
+    <p class="sin-resultados">No se encontraron productos que coincidan con los filtros seleccionados.</p>
+  </div>
   } @else {
-    <div class="productos-grid">
-      @for (producto of productosFiltrados; track producto.id) {
-        <article class="producto-card">
-          <a class="producto-card-link" [routerLink]="['/productos', producto.id]">
-            <div class="card-img-wrapper">
-              @if (producto.imagenUrl) {
-                <img [src]="producto.imagenUrl" [alt]="producto.nombre" class="producto-img" />
-              } @else {
-                <span class="img-placeholder">Sin imagen</span>
-              }
-            </div>
-            <div class="producto-info">
-              <div class="card-top-tags">
-                <span class="type-pill">{{ formatearTipoCaja(producto.tipoCaja) }}</span>
-                @if (producto.stock > 0) {
-                  <span class="stock-pill stock-pill--ok">Disponible</span>
-                } @else {
-                  <span class="stock-pill stock-pill--out">Sin stock</span>
-                }
-              </div>
+  <div class="productos-grid">
+    @for (producto of productosFiltrados; track producto.id) {
+    <article class="producto-card">
+      <a class="producto-card-link" [routerLink]="['/productos', producto.id]">
+        <div class="card-img-wrapper">
+          @if (producto.imagenUrl) {
+          <img [src]="producto.imagenUrl" [alt]="producto.nombre" class="producto-img" />
+          } @else {
+          <img src="/branding/dittostore-logo.jpg" [alt]="producto.nombre" class="producto-img" />
+          }
+        </div>
+        <div class="producto-info">
+          <div class="card-top-tags">
+            <span class="type-pill">{{ formatearTipoCaja(producto.tipoCaja) }}</span>
+            @if (producto.stock > 0) {
+            <span class="stock-pill stock-pill--ok">Disponible</span>
+            } @else {
+            <span class="stock-pill stock-pill--out">Sin stock</span>
+            }
+          </div>
 
-              <h3 class="product-name" [title]="producto.nombre">{{ producto.nombre }}</h3>
-              <p class="product-collection">{{ producto.coleccionSet }}</p>
+          <h3 class="product-name" [title]="producto.nombre">{{ producto.nombre }}</h3>
+          <p class="product-collection">{{ producto.coleccionSet }}</p>
 
-              <div class="card-footer-row">
-                <span class="product-price">${{ formatearPrecio(producto.precio) }}</span>
-                <span class="btn-detalles">Ver detalles &rarr;</span>
-              </div>
-            </div>
-          </a>
-        </article>
-      }
-    </div>
+          <div class="card-footer-row">
+            <span class="product-price">${{ formatearPrecio(producto.precio) }}</span>
+            <span class="btn-detalles">Ver detalles &rarr;</span>
+          </div>
+        </div>
+      </a>
+    </article>
+    }
+  </div>
   }
 </div>

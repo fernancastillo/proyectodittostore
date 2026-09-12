@@ -20,4 +20,5 @@ public class CarritoItemBffResponseDTO {
     private String nombre;
     private String imagenUrl;
     private String coleccionSet;
+    private Integer stock;
 }

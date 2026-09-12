@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&display=swap');
+
 :host {
   display: block;
   background-color: #ffffff;
@@ -6,8 +8,6 @@
 :host *, :host *::before, :host *::after {
   box-sizing: border-box;
 }
-
-@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&display=swap');
 
 .hero-pokemon {
   background-color: #ffffff;

@@ -21,7 +21,7 @@ export class ClienteLayout implements OnInit {
 
   isLoggedIn = false;
   nombreUsuario = '';
-  menuAbierto = false; 
+  menuAbierto = false;
 
   ngOnInit(): void {
     this.actualizarEstadoLogin();

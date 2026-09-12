@@ -1,15 +1,16 @@
 <section class="hero-pokemon">
   <div class="hero-content">
     <h2 class="hero-title">Consigue las cartas Pokémon más exclusivas</h2>
-    <p>Desde packs de expansión clásicos hasta las últimas novedades del JCC Pokémon. Hazte con todas y completa tu colección con nosotros.</p>
+    <p>Desde packs de expansión clásicos hasta las últimas novedades del JCC Pokémon. Hazte con todas y completa tu
+      colección con nosotros.</p>
     <div class="hero-buttons">
       <a routerLink="/productos" class="btn btn-primary btn-large hero-cta">
         <span class="hero-cta-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" width="20" height="20">
-            <circle cx="12" cy="12" r="9.5" fill="none" stroke="currentColor" stroke-width="2"/>
-            <path d="M2.5 12h6.3M15.2 12h6.3" stroke="currentColor" stroke-width="2"/>
-            <circle cx="12" cy="12" r="3.2" fill="currentColor"/>
-            <circle cx="12" cy="12" r="1.3" fill="#ffffff"/>
+            <circle cx="12" cy="12" r="9.5" fill="none" stroke="currentColor" stroke-width="2" />
+            <path d="M2.5 12h6.3M15.2 12h6.3" stroke="currentColor" stroke-width="2" />
+            <circle cx="12" cy="12" r="3.2" fill="currentColor" />
+            <circle cx="12" cy="12" r="1.3" fill="#ffffff" />
           </svg>
         </span>
         Explorar catálogo
@@ -27,15 +28,15 @@
 <section class="trending-section">
   <div class="section-header">
     <h3 class="section-title">¿Ya las tienes?</h3>
-    <p class="section-subtitle">cartas más buscadas y deseadas del momento</p>
+    <p class="section-subtitle">Cartas más buscadas y deseadas del momento</p>
   </div>
 
   <div class="trending-carousel">
     <div class="trending-track">
       @for (img of trendingImagesLoop; track $index) {
-        <div class="trending-card">
-          <img [src]="img" alt="" class="trending-img">
-        </div>
+      <div class="trending-card">
+        <img [src]="img" alt="" class="trending-img">
+      </div>
       }
     </div>
   </div>
@@ -49,29 +50,22 @@
 
   <div class="products-grid">
     @for (producto of productosDestacados.slice(0, 5); track producto.id) {
-      <article class="product-card">
-        <div class="card-img-wrapper">
-          @if (producto.imagenUrl) {
-            <img [src]="producto.imagenUrl" [alt]="producto.nombre" class="product-img">
-          } @else {
-            <div class="no-image">
-              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-                <circle cx="8.5" cy="8.5" r="1.5"/>
-                <polyline points="21 15 16 10 5 21"/>
-              </svg>
-              <span>Sin imagen</span>
-            </div>
-          }
-        </div>
-        <div class="product-info">
-          <h4 class="product-name" [title]="producto.nombre">{{ producto.nombre }}</h4>
-          <p class="product-price">${{ producto.precio | number:'1.0-0' }}</p>
-          <a class="btn btn-secondary w-100" [routerLink]="['/productos', producto.id]">
-            Ver Detalles
-          </a>
-        </div>
-      </article>
+    <article class="product-card">
+      <div class="card-img-wrapper">
+        @if (producto.imagenUrl) {
+        <img [src]="producto.imagenUrl" [alt]="producto.nombre" class="product-img">
+        } @else {
+        <img src="/branding/dittostore-logo.jpg" [alt]="producto.nombre" class="product-img">
+        }
+      </div>
+      <div class="product-info">
+        <h4 class="product-name" [title]="producto.nombre">{{ producto.nombre }}</h4>
+        <p class="product-price">${{ producto.precio | number:'1.0-0' }}</p>
+        <a class="btn btn-secondary w-100" [routerLink]="['/productos', producto.id]">
+          Ver Detalles
+        </a>
+      </div>
+    </article>
     }
   </div>
 </section>

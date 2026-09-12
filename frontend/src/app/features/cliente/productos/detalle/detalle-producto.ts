@@ -100,7 +100,7 @@ export class DetalleProducto implements OnInit {
       },
       error: (err) => {
         this.agregandoAlCarrito = false;
-        this.errorCarrito = `No se pudo agregar el producto (${err.status})`;
+        this.errorCarrito = err.error?.mensaje ?? `No se pudo agregar el producto (${err.status})`;
         this.cdr.detectChanges();
       }
     });

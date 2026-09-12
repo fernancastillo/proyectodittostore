@@ -44,8 +44,12 @@ export class CarritoComponent {
   incrementar(itemId: number): void {
     this.carritoService.incrementarItem(itemId).subscribe({
       next: (carrito) => this.carrito.set(carrito),
-      error: (err) => this.error.set(`Error ${err.status}: ${err.message}`),
+      error: (err) => this.error.set(err.error?.mensaje ?? `Error ${err.status}: ${err.message}`),
     });
+  }
+
+  alcanzoStockMaximo(item: { cantidad: number; stock: number }): boolean {
+    return item.cantidad >= item.stock;
   }
 
   decrementar(itemId: number): void {
