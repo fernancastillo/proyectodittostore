@@ -3,6 +3,7 @@ package com.dittostore.infrastructure.bffservice.controller;
 import com.dittostore.infrastructure.bffservice.client.CarritoClient;
 import com.dittostore.infrastructure.bffservice.client.PagoClient;
 import com.dittostore.infrastructure.bffservice.client.PedidosClient;
+import com.dittostore.infrastructure.bffservice.client.ProductoClient;
 import com.dittostore.infrastructure.bffservice.client.UsuariosClient;
 import com.dittostore.infrastructure.bffservice.dto.*;
 import com.dittostore.infrastructure.bffservice.exception.CarritoVacioException;
@@ -16,17 +17,18 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/bff/pago")
-@RequiredArgsConstructor
+@RequiredArgsConstructor 
 public class PagoController {
 
     private final CarritoClient carritoClient;
     private final UsuariosClient usuariosClient;
     private final PedidosClient pedidosClient;
     private final PagoClient pagoClient;
+    private final ProductoClient productoClient; 
 
     @PostMapping("/checkout")
     public CheckoutResponseDTO pagar(@AuthenticationPrincipal Jwt jwt,
-                                      @Valid @RequestBody CheckoutRequestDTO request) {
+            @Valid @RequestBody CheckoutRequestDTO request) {
         Long usuarioId = resolverUsuarioId(jwt);
 
         CarritoDTO carritoActivo = carritoClient.obtenerOCrearActivo(usuarioId);
@@ -36,14 +38,21 @@ public class PagoController {
             throw new CarritoVacioException();
         }
 
+        List<ReducirStockItemDTO> itemsStock = items.stream()
+                .map(item -> new ReducirStockItemDTO(item.getProductoId(), item.getCantidad()))
+                .toList();
+        productoClient.reducirStock(new ReducirStockRequestDTO(itemsStock));
+
         List<PedidoItemRequestDTO> itemsPedido = items.stream()
-                .map(item -> new PedidoItemRequestDTO(item.getProductoId(), item.getCantidad(), item.getPrecioUnitario()))
+                .map(item -> new PedidoItemRequestDTO(item.getProductoId(), item.getCantidad(),
+                        item.getPrecioUnitario()))
                 .toList();
 
         PedidoRequestDTO pedidoRequest = new PedidoRequestDTO(usuarioId, request.getDireccionEnvio(), itemsPedido);
         PedidoResponseDTO pedido = pedidosClient.crearPedido(pedidoRequest);
 
-        PagoRequestDTO pagoRequest = new PagoRequestDTO(pedido.getId(), pedido.getTotal(), request.getMetodoPago().name());
+        PagoRequestDTO pagoRequest = new PagoRequestDTO(pedido.getId(), pedido.getTotal(),
+                request.getMetodoPago().name());
         PagoResponseDTO pago = pagoClient.crearPago(pagoRequest);
 
         pago = pagoClient.actualizarEstadoPago(pago.getId(), new EstadoPagoUpdateRequestDTO("APROBADO"));

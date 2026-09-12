@@ -7,6 +7,7 @@ export interface CarritoItem {
   nombre: string;
   imagenUrl: string;
   coleccionSet?: string;
+  stock: number;
 }
 
 export interface Carrito {

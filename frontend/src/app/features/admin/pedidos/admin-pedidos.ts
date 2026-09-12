@@ -1,7 +1,9 @@
 import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { forkJoin } from 'rxjs';
 import { PedidoAdminService, Pedido, EstadoPedido } from '../../../core/services/pedido-admin.service';
+import { UsuarioAdminService } from '../../../core/services/usuario-admin.service';
 
 @Component({
   selector: 'app-admin-pedidos',
@@ -12,11 +14,14 @@ import { PedidoAdminService, Pedido, EstadoPedido } from '../../../core/services
 })
 export class AdminPedidos implements OnInit {
   private pedidoService = inject(PedidoAdminService);
+  private usuarioService = inject(UsuarioAdminService);
   private cdr = inject(ChangeDetectorRef);
 
   pedidos: Pedido[] = [];
   cargando = true;
   error: string | null = null;
+
+  private nombresUsuarios = new Map<number, string>();
 
   filtroTexto = '';
   filtroEstado = '';
@@ -36,9 +41,17 @@ export class AdminPedidos implements OnInit {
 
   cargarPedidos(): void {
     this.cargando = true;
-    this.pedidoService.obtenerTodos().subscribe({
-      next: (data) => {
-        this.pedidos = data;
+    this.error = null;
+
+    forkJoin({
+      pedidos: this.pedidoService.obtenerTodos(),
+      usuarios: this.usuarioService.obtenerTodos()
+    }).subscribe({
+      next: ({ pedidos, usuarios }) => {
+        this.nombresUsuarios = new Map(
+          usuarios.map(u => [u.id!, `${u.nombre} ${u.apellido}`.trim()])
+        );
+        this.pedidos = pedidos;
         this.cargando = false;
         this.cdr.detectChanges();
       },
@@ -50,6 +63,10 @@ export class AdminPedidos implements OnInit {
     });
   }
 
+  nombreUsuario(usuarioId: number): string {
+    return this.nombresUsuarios.get(usuarioId) ?? 'Usuario no encontrado';
+  }
+
   get pedidosFiltrados(): Pedido[] {
     let resultado = [...this.pedidos];
 
@@ -58,7 +75,8 @@ export class AdminPedidos implements OnInit {
       resultado = resultado.filter(p =>
         p.id.toString().includes(texto) ||
         p.usuarioId.toString().includes(texto) ||
-        p.direccionEnvio?.toLowerCase().includes(texto)
+        p.direccionEnvio?.toLowerCase().includes(texto) ||
+        this.nombreUsuario(p.usuarioId).toLowerCase().includes(texto) // NUEVO
       );
     }
 
