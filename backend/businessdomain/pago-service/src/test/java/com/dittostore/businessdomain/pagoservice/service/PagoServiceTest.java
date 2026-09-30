@@ -6,6 +6,7 @@ import com.dittostore.businessdomain.pagoservice.entity.EstadoPago;
 import com.dittostore.businessdomain.pagoservice.entity.MetodoPago;
 import com.dittostore.businessdomain.pagoservice.entity.Pago;
 import com.dittostore.businessdomain.pagoservice.exception.PagoNotFoundException;
+import com.dittostore.businessdomain.pagoservice.messaging.producer.PagoEventPublisher;
 import com.dittostore.businessdomain.pagoservice.repository.PagoRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,6 +22,8 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -28,6 +31,9 @@ class PagoServiceTest {
 
     @Mock
     private PagoRepository pagoRepository;
+
+    @Mock
+    private PagoEventPublisher eventPublisher;
 
     @InjectMocks
     private PagoServiceImpl pagoService;
@@ -58,6 +64,7 @@ class PagoServiceTest {
         assertThat(resultado.getPedidoId()).isEqualTo(5L);
         assertThat(resultado.getEstado()).isEqualTo(EstadoPago.PENDIENTE);
         assertThat(resultado.getTransaccionId()).isNotBlank();
+        verify(eventPublisher).publicarCreado(any(PagoResponseDTO.class));
     }
 
     @Test
@@ -66,10 +73,11 @@ class PagoServiceTest {
 
         assertThatThrownBy(() -> pagoService.obtenerPorId(99L))
                 .isInstanceOf(PagoNotFoundException.class);
+        verifyNoInteractions(eventPublisher);
     }
 
     @Test
-    void actualizarEstado_cambiaElEstadoDelPago() {
+    void actualizarEstado_cambiaElEstadoDelPagoYPublicaElEvento() {
         when(pagoRepository.findById(1L)).thenReturn(Optional.of(pagoGuardado));
         when(pagoRepository.save(any(Pago.class))).thenReturn(pagoGuardado);
 
@@ -77,5 +85,6 @@ class PagoServiceTest {
 
         assertThat(pagoGuardado.getEstado()).isEqualTo(EstadoPago.APROBADO);
         assertThat(resultado).isNotNull();
+        verify(eventPublisher).publicarCambioEstado(any(PagoResponseDTO.class));
     }
 }

@@ -14,4 +14,11 @@
     <name>pago-service</name>
     <description>Microservicio de pagos de Ditto Store</description>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-amqp</artifactId>
+        </dependency>
+    </dependencies>
+
 </project>

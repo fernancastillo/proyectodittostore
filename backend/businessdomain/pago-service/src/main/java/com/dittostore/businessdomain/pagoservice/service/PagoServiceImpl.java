@@ -5,6 +5,7 @@ import com.dittostore.businessdomain.pagoservice.dto.PagoResponseDTO;
 import com.dittostore.businessdomain.pagoservice.entity.EstadoPago;
 import com.dittostore.businessdomain.pagoservice.entity.Pago;
 import com.dittostore.businessdomain.pagoservice.exception.PagoNotFoundException;
+import com.dittostore.businessdomain.pagoservice.messaging.producer.PagoEventPublisher;
 import com.dittostore.businessdomain.pagoservice.repository.PagoRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,9 +18,11 @@ import java.util.UUID;
 public class PagoServiceImpl implements PagoService {
 
     private final PagoRepository pagoRepository;
+    private final PagoEventPublisher eventPublisher;
 
-    public PagoServiceImpl(PagoRepository pagoRepository) {
+    public PagoServiceImpl(PagoRepository pagoRepository, PagoEventPublisher eventPublisher) {
         this.pagoRepository = pagoRepository;
+        this.eventPublisher = eventPublisher;
     }
 
     @Override
@@ -30,13 +33,14 @@ public class PagoServiceImpl implements PagoService {
                 .monto(requestDTO.getMonto())
                 .metodoPago(requestDTO.getMetodoPago())
                 .estado(EstadoPago.PENDIENTE)
-                // Simula el ID que devolvería una pasarela real (Transbank, Stripe, etc.)
                 .transaccionId("TXN-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase())
                 .fechaPago(LocalDateTime.now())
                 .build();
 
         pago = pagoRepository.save(pago);
-        return toResponseDTO(pago);
+        PagoResponseDTO respuesta = toResponseDTO(pago);
+        eventPublisher.publicarCreado(respuesta);
+        return respuesta;
     }
 
     @Override
@@ -67,7 +71,9 @@ public class PagoServiceImpl implements PagoService {
                 .orElseThrow(() -> new PagoNotFoundException(id));
         pago.setEstado(nuevoEstado);
         pago = pagoRepository.save(pago);
-        return toResponseDTO(pago);
+        PagoResponseDTO respuesta = toResponseDTO(pago);
+        eventPublisher.publicarCambioEstado(respuesta);
+        return respuesta;
     }
 
     @Override
