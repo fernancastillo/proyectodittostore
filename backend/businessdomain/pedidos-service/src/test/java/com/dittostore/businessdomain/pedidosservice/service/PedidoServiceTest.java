@@ -6,6 +6,7 @@ import com.dittostore.businessdomain.pedidosservice.dto.PedidoResponseDTO;
 import com.dittostore.businessdomain.pedidosservice.entity.EstadoPedido;
 import com.dittostore.businessdomain.pedidosservice.entity.Pedido;
 import com.dittostore.businessdomain.pedidosservice.exception.PedidoNotFoundException;
+import com.dittostore.businessdomain.pedidosservice.messaging.producer.PedidoProducer;
 import com.dittostore.businessdomain.pedidosservice.repository.PedidoItemRepository;
 import com.dittostore.businessdomain.pedidosservice.repository.PedidoRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,6 +34,9 @@ class PedidoServiceTest {
 
     @Mock
     private PedidoItemRepository pedidoItemRepository;
+
+    @Mock
+    private PedidoProducer pedidoProducer;
 
     @InjectMocks
     private PedidoServiceImpl pedidoService;
