@@ -14,4 +14,11 @@
     <name>reviews-service</name>
     <description>Microservicio de reseñas de productos de Ditto Store</description>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-amqp</artifactId>
+        </dependency>
+    </dependencies>
+
 </project>
