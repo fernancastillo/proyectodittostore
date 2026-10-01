@@ -8,6 +8,8 @@ import com.dittostore.businessdomain.pedidosservice.entity.EstadoPedido;
 import com.dittostore.businessdomain.pedidosservice.entity.Pedido;
 import com.dittostore.businessdomain.pedidosservice.entity.PedidoItem;
 import com.dittostore.businessdomain.pedidosservice.exception.PedidoNotFoundException;
+import com.dittostore.businessdomain.pedidosservice.messaging.dto.PedidoConfirmadoEvent;
+import com.dittostore.businessdomain.pedidosservice.messaging.producer.PedidoProducer;
 import com.dittostore.businessdomain.pedidosservice.repository.PedidoItemRepository;
 import com.dittostore.businessdomain.pedidosservice.repository.PedidoRepository;
 import org.springframework.stereotype.Service;
@@ -22,10 +24,13 @@ public class PedidoServiceImpl implements PedidoService {
 
     private final PedidoRepository pedidoRepository;
     private final PedidoItemRepository pedidoItemRepository;
+    private final PedidoProducer pedidoProducer;
 
-    public PedidoServiceImpl(PedidoRepository pedidoRepository, PedidoItemRepository pedidoItemRepository) {
+    public PedidoServiceImpl(PedidoRepository pedidoRepository, PedidoItemRepository pedidoItemRepository,
+                              PedidoProducer pedidoProducer) {
         this.pedidoRepository = pedidoRepository;
         this.pedidoItemRepository = pedidoItemRepository;
+        this.pedidoProducer = pedidoProducer;
     }
 
     @Override
@@ -88,6 +93,16 @@ public class PedidoServiceImpl implements PedidoService {
                 .orElseThrow(() -> new PedidoNotFoundException(id));
         pedido.setEstado(nuevoEstado);
         pedido = pedidoRepository.save(pedido);
+
+        if (nuevoEstado == EstadoPedido.CONFIRMADO) {
+            pedidoProducer.publicarPedidoConfirmado(PedidoConfirmadoEvent.builder()
+                    .pedidoId(pedido.getId())
+                    .usuarioId(pedido.getUsuarioId())
+                    .total(pedido.getTotal())
+                    .fechaConfirmacion(LocalDateTime.now())
+                    .build());
+        }
+
         return toResponseDTO(pedido);
     }
 
