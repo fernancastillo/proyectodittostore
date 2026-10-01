@@ -7,6 +7,7 @@ import com.dittostore.businessdomain.pagoservice.entity.MetodoPago;
 import com.dittostore.businessdomain.pagoservice.entity.Pago;
 import com.dittostore.businessdomain.pagoservice.exception.PagoNotFoundException;
 import com.dittostore.businessdomain.pagoservice.repository.PagoRepository;
+import com.dittostore.businessdomain.pagoservice.messaging.producer.PagoEventPublisher;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,6 +29,9 @@ class PagoServiceTest {
 
     @Mock
     private PagoRepository pagoRepository;
+
+    @Mock
+    private PagoEventPublisher pagoEventPublisher;
 
     @InjectMocks
     private PagoServiceImpl pagoService;

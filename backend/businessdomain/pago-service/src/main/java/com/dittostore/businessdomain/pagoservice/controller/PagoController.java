@@ -4,6 +4,7 @@ import com.dittostore.businessdomain.pagoservice.dto.EstadoPagoUpdateRequestDTO;
 import com.dittostore.businessdomain.pagoservice.dto.PagoRequestDTO;
 import com.dittostore.businessdomain.pagoservice.dto.PagoResponseDTO;
 import com.dittostore.businessdomain.pagoservice.service.PagoService;
+import com.dittostore.businessdomain.pagoservice.dto.ReembolsoRequestDTO;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
 import java.util.List;
 
 @RestController
@@ -39,7 +41,6 @@ public class PagoController {
         return ResponseEntity.ok(pagoService.obtenerPorId(id));
     }
 
-    // Endpoint que consume el BFF a través de PagoClient (FeignClient)
     @GetMapping("/pedido/{pedidoId}")
     public ResponseEntity<List<PagoResponseDTO>> obtenerPorPedido(@PathVariable Long pedidoId) {
         return ResponseEntity.ok(pagoService.obtenerPorPedido(pedidoId));
@@ -52,7 +53,7 @@ public class PagoController {
 
     @PatchMapping("/{id}/estado")
     public ResponseEntity<PagoResponseDTO> actualizarEstado(@PathVariable Long id,
-                                                              @Valid @RequestBody EstadoPagoUpdateRequestDTO body) {
+            @Valid @RequestBody EstadoPagoUpdateRequestDTO body) {
         return ResponseEntity.ok(pagoService.actualizarEstado(id, body.getEstado()));
     }
 
@@ -60,5 +61,13 @@ public class PagoController {
     public ResponseEntity<Void> eliminar(@PathVariable Long id) {
         pagoService.eliminar(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{id}/reembolso")
+    public ResponseEntity<Map<String, Object>> solicitarReembolso(@PathVariable Long id,
+            @Valid @RequestBody ReembolsoRequestDTO body) {
+        pagoService.solicitarReembolso(id, body.getMotivo());
+        return ResponseEntity.status(HttpStatus.ACCEPTED)
+                .body(Map.of("mensaje", "Solicitud de reembolso encolada", "pagoId", id));
     }
 }
