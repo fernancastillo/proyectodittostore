@@ -19,4 +19,6 @@ public interface PedidoService {
     PedidoResponseDTO actualizarEstado(Long id, EstadoPedido nuevoEstado);
 
     void eliminar(Long id);
+
+    void aplicarResultadoPago(Long pedidoId, String estadoPago);
 }
