@@ -27,7 +27,7 @@ public class RabbitAdminServiceImpl implements RabbitAdminService {
                 args.put("x-dead-letter-exchange", request.getDeadLetterExchange());
             }
             Queue queue = new Queue(request.getNombre(), request.isDurable(),
-                    request.isExclusive(), request.isAutoDelete(), args);
+                    false, request.isAutoDelete(), args);
             amqpAdmin.declareQueue(queue);
         } catch (Exception ex) {
             throw new RabbitAdminException("No se pudo crear la cola " + request.getNombre(), ex);

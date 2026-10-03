@@ -3,42 +3,57 @@ services:
     image: rabbitmq:4.2-management
     container_name: rabbit1
     hostname: rabbit1
+    restart: unless-stopped
     ports:
       - "5672:5672"
       - "15672:15672"
     environment:
-      RABBITMQ_ERLANG_COOKIE: ditto-cookie-secreta
+      RABBITMQ_ERLANG_COOKIE: ${RABBITMQ_ERLANG_COOKIE:-ditto-cookie-secreta}
       RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-guest}
       RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASS:-guest}
     volumes:
       - ./rabbitmq/cluster.conf:/etc/rabbitmq/conf.d/20-cluster.conf:ro
       - rabbit1_data:/var/lib/rabbitmq
     healthcheck:
-      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "check_running"]
       interval: 10s
-      timeout: 5s
-      retries: 5
+      timeout: 10s
+      retries: 10
+      start_period: 20s
+    networks:
+      - rabbit_net
 
   rabbit2:
     image: rabbitmq:4.2-management
     container_name: rabbit2
     hostname: rabbit2
+    restart: unless-stopped
+    depends_on:
+      rabbit1:
+        condition: service_healthy
     ports:
       - "5673:5672"
       - "15673:15672"
     environment:
-      RABBITMQ_ERLANG_COOKIE: ditto-cookie-secreta
+      RABBITMQ_ERLANG_COOKIE: ${RABBITMQ_ERLANG_COOKIE:-ditto-cookie-secreta}
       RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-guest}
       RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASS:-guest}
     volumes:
       - ./rabbitmq/cluster.conf:/etc/rabbitmq/conf.d/20-cluster.conf:ro
       - rabbit2_data:/var/lib/rabbitmq
     healthcheck:
-      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "check_running"]
       interval: 10s
-      timeout: 5s
-      retries: 5
+      timeout: 10s
+      retries: 10
+      start_period: 20s
+    networks:
+      - rabbit_net
 
 volumes:
   rabbit1_data:
   rabbit2_data:
+
+networks:
+  rabbit_net:
+    driver: bridge

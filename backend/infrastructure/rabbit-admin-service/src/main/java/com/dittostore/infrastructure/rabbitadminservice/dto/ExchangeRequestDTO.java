@@ -14,10 +14,11 @@ import lombok.NoArgsConstructor;
 public class ExchangeRequestDTO {
 
     @NotBlank(message = "El nombre del exchange es obligatorio")
+    @Pattern(regexp = ValidacionRabbit.NOMBRE_REGEX, message = ValidacionRabbit.NOMBRE_MENSAJE)
     private String nombre;
 
-    @NotBlank
-    @Pattern(regexp = "direct|topic|fanout|headers", message = "Tipo de exchange inválido")
+    @NotBlank(message = "El tipo de exchange es obligatorio")
+    @Pattern(regexp = "direct|topic|fanout|headers", message = "Tipo de exchange inválido (direct, topic, fanout o headers)")
     @Builder.Default
     private String tipo = "direct";
 
