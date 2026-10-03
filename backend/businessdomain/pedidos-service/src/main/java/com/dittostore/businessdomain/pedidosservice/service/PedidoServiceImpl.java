@@ -8,6 +8,7 @@ import com.dittostore.businessdomain.pedidosservice.entity.EstadoPedido;
 import com.dittostore.businessdomain.pedidosservice.entity.Pedido;
 import com.dittostore.businessdomain.pedidosservice.entity.PedidoItem;
 import com.dittostore.businessdomain.pedidosservice.exception.PedidoNotFoundException;
+import com.dittostore.businessdomain.pedidosservice.messaging.producer.PedidoProducer;
 import com.dittostore.businessdomain.pedidosservice.repository.PedidoItemRepository;
 import com.dittostore.businessdomain.pedidosservice.repository.PedidoRepository;
 import org.springframework.stereotype.Service;
@@ -22,10 +23,13 @@ public class PedidoServiceImpl implements PedidoService {
 
     private final PedidoRepository pedidoRepository;
     private final PedidoItemRepository pedidoItemRepository;
+    private final PedidoProducer pedidoProducer;
 
-    public PedidoServiceImpl(PedidoRepository pedidoRepository, PedidoItemRepository pedidoItemRepository) {
+    public PedidoServiceImpl(PedidoRepository pedidoRepository, PedidoItemRepository pedidoItemRepository,
+                              PedidoProducer pedidoProducer) {
         this.pedidoRepository = pedidoRepository;
         this.pedidoItemRepository = pedidoItemRepository;
+        this.pedidoProducer = pedidoProducer;
     }
 
     @Override
@@ -57,6 +61,7 @@ public class PedidoServiceImpl implements PedidoService {
         pedido.setTotal(total);
         pedido = pedidoRepository.save(pedido);
 
+        pedidoProducer.publicarCambioEstado(pedido.getId(), pedido.getUsuarioId(), pedido.getEstado());
         return toResponseDTO(pedido);
     }
 
@@ -86,9 +91,26 @@ public class PedidoServiceImpl implements PedidoService {
     public PedidoResponseDTO actualizarEstado(Long id, EstadoPedido nuevoEstado) {
         Pedido pedido = pedidoRepository.findById(id)
                 .orElseThrow(() -> new PedidoNotFoundException(id));
-        pedido.setEstado(nuevoEstado);
-        pedido = pedidoRepository.save(pedido);
+        pedido = cambiarEstado(pedido, nuevoEstado);
         return toResponseDTO(pedido);
+    }
+
+    @Override
+    @Transactional
+    public void aplicarResultadoPago(Long pedidoId, String estadoPago) {
+        Pedido pedido = pedidoRepository.findById(pedidoId)
+                .orElseThrow(() -> new PedidoNotFoundException(pedidoId));
+
+        String estado = estadoPago == null ? "" : estadoPago.toUpperCase();
+        if ("APROBADO".equals(estado)) {
+            if (pedido.getEstado() == EstadoPedido.PENDIENTE) {
+                cambiarEstado(pedido, EstadoPedido.CONFIRMADO);
+            }
+        } else if ("REEMBOLSADO".equals(estado)) {
+            if (pedido.getEstado() != EstadoPedido.ENTREGADO && pedido.getEstado() != EstadoPedido.CANCELADO) {
+                cambiarEstado(pedido, EstadoPedido.CANCELADO);
+            }
+        }
     }
 
     @Override
@@ -99,6 +121,17 @@ public class PedidoServiceImpl implements PedidoService {
         }
         pedidoItemRepository.deleteByPedidoId(id);
         pedidoRepository.deleteById(id);
+    }
+
+    // Guarda el nuevo estado y publica el evento solo si el estado realmente cambió
+    private Pedido cambiarEstado(Pedido pedido, EstadoPedido nuevoEstado) {
+        EstadoPedido anterior = pedido.getEstado();
+        pedido.setEstado(nuevoEstado);
+        Pedido guardado = pedidoRepository.save(pedido);
+        if (anterior != nuevoEstado) {
+            pedidoProducer.publicarCambioEstado(guardado.getId(), guardado.getUsuarioId(), nuevoEstado);
+        }
+        return guardado;
     }
 
     private PedidoResponseDTO toResponseDTO(Pedido pedido) {

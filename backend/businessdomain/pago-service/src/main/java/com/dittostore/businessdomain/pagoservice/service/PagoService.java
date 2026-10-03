@@ -19,4 +19,8 @@ public interface PagoService {
     PagoResponseDTO actualizarEstado(Long id, EstadoPago nuevoEstado);
 
     void eliminar(Long id);
+
+    void solicitarReembolso(Long id, String motivo);
+
+    PagoResponseDTO procesarReembolso(Long id);
 }
