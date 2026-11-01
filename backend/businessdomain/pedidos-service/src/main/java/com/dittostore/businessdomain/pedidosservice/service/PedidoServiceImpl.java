@@ -11,6 +11,7 @@ import com.dittostore.businessdomain.pedidosservice.exception.PedidoNotFoundExce
 import com.dittostore.businessdomain.pedidosservice.messaging.producer.PedidoProducer;
 import com.dittostore.businessdomain.pedidosservice.repository.PedidoItemRepository;
 import com.dittostore.businessdomain.pedidosservice.repository.PedidoRepository;
+import com.dittostore.businessdomain.pedidosservice.messaging.kafka.producer.PedidoKafkaProducer;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,12 +25,14 @@ public class PedidoServiceImpl implements PedidoService {
     private final PedidoRepository pedidoRepository;
     private final PedidoItemRepository pedidoItemRepository;
     private final PedidoProducer pedidoProducer;
+    private final PedidoKafkaProducer pedidoKafkaProducer;
 
     public PedidoServiceImpl(PedidoRepository pedidoRepository, PedidoItemRepository pedidoItemRepository,
-                              PedidoProducer pedidoProducer) {
+            PedidoProducer pedidoProducer, PedidoKafkaProducer pedidoKafkaProducer) {
         this.pedidoRepository = pedidoRepository;
         this.pedidoItemRepository = pedidoItemRepository;
         this.pedidoProducer = pedidoProducer;
+        this.pedidoKafkaProducer = pedidoKafkaProducer;
     }
 
     @Override
@@ -62,6 +65,7 @@ public class PedidoServiceImpl implements PedidoService {
         pedido = pedidoRepository.save(pedido);
 
         pedidoProducer.publicarCambioEstado(pedido.getId(), pedido.getUsuarioId(), pedido.getEstado());
+        pedidoKafkaProducer.publicarCambioEstado(pedido, pedidoItemRepository.findByPedidoId(pedido.getId()));
         return toResponseDTO(pedido);
     }
 
@@ -123,13 +127,13 @@ public class PedidoServiceImpl implements PedidoService {
         pedidoRepository.deleteById(id);
     }
 
-    // Guarda el nuevo estado y publica el evento solo si el estado realmente cambió
     private Pedido cambiarEstado(Pedido pedido, EstadoPedido nuevoEstado) {
         EstadoPedido anterior = pedido.getEstado();
         pedido.setEstado(nuevoEstado);
         Pedido guardado = pedidoRepository.save(pedido);
         if (anterior != nuevoEstado) {
             pedidoProducer.publicarCambioEstado(guardado.getId(), guardado.getUsuarioId(), nuevoEstado);
+            pedidoKafkaProducer.publicarCambioEstado(guardado, pedidoItemRepository.findByPedidoId(guardado.getId()));
         }
         return guardado;
     }

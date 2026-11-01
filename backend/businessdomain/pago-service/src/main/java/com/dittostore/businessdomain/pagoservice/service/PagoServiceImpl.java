@@ -7,6 +7,7 @@ import com.dittostore.businessdomain.pagoservice.entity.Pago;
 import com.dittostore.businessdomain.pagoservice.exception.PagoNotFoundException;
 import com.dittostore.businessdomain.pagoservice.messaging.producer.PagoEventPublisher;
 import com.dittostore.businessdomain.pagoservice.repository.PagoRepository;
+import com.dittostore.businessdomain.pagoservice.messaging.kafka.producer.AlertaPagoKafkaProducer;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,10 +20,15 @@ public class PagoServiceImpl implements PagoService {
 
     private final PagoRepository pagoRepository;
     private final PagoEventPublisher pagoEventPublisher;
+    private final DetectorAlertasPago detectorAlertasPago;
+    private final AlertaPagoKafkaProducer alertaPagoKafkaProducer;
 
-    public PagoServiceImpl(PagoRepository pagoRepository, PagoEventPublisher pagoEventPublisher) {
+    public PagoServiceImpl(PagoRepository pagoRepository, PagoEventPublisher pagoEventPublisher,
+            DetectorAlertasPago detectorAlertasPago, AlertaPagoKafkaProducer alertaPagoKafkaProducer) {
         this.pagoRepository = pagoRepository;
         this.pagoEventPublisher = pagoEventPublisher;
+        this.detectorAlertasPago = detectorAlertasPago;
+        this.alertaPagoKafkaProducer = alertaPagoKafkaProducer;
     }
 
     @Override
@@ -40,6 +46,7 @@ public class PagoServiceImpl implements PagoService {
         pago = pagoRepository.save(pago);
         PagoResponseDTO respuesta = toResponseDTO(pago);
         pagoEventPublisher.publicarCambioEstado(respuesta);
+        detectorAlertasPago.evaluarCreacion(respuesta).ifPresent(alertaPagoKafkaProducer::publicar);
         return respuesta;
     }
 
@@ -73,6 +80,7 @@ public class PagoServiceImpl implements PagoService {
         pago = pagoRepository.save(pago);
         PagoResponseDTO respuesta = toResponseDTO(pago);
         pagoEventPublisher.publicarCambioEstado(respuesta);
+        detectorAlertasPago.evaluarCambioEstado(respuesta).ifPresent(alertaPagoKafkaProducer::publicar);
         return respuesta;
     }
 

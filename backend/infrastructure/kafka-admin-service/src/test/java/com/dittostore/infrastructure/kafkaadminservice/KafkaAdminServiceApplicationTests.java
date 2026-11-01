@@ -1,4 +1,4 @@
-package com.dittostore.infrastructure.kafka_admin_service;
+package com.dittostore.infrastructure.kafkaadminservice;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

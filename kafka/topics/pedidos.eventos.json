@@ -1,0 +1,9 @@
+{
+  "nombre": "pedidos.eventos",
+  "particiones": 3,
+  "replicas": 3,
+  "configuraciones": {
+    "cleanup.policy": "delete",
+    "retention.ms": "604800000"
+  }
+}
