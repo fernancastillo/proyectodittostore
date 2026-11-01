@@ -8,6 +8,8 @@ import com.dittostore.businessdomain.pagoservice.entity.Pago;
 import com.dittostore.businessdomain.pagoservice.exception.PagoNotFoundException;
 import com.dittostore.businessdomain.pagoservice.repository.PagoRepository;
 import com.dittostore.businessdomain.pagoservice.messaging.producer.PagoEventPublisher;
+import com.dittostore.businessdomain.pagoservice.messaging.kafka.producer.AlertaPagoKafkaProducer;
+import com.dittostore.businessdomain.pagoservice.messaging.kafka.event.AlertaPagoEvent;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,6 +25,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class PagoServiceTest {
@@ -32,6 +36,12 @@ class PagoServiceTest {
 
     @Mock
     private PagoEventPublisher pagoEventPublisher;
+
+    @Mock
+    private DetectorAlertasPago detectorAlertasPago;
+
+    @Mock
+    private AlertaPagoKafkaProducer alertaPagoKafkaProducer;
 
     @InjectMocks
     private PagoServiceImpl pagoService;
@@ -81,5 +91,26 @@ class PagoServiceTest {
 
         assertThat(pagoGuardado.getEstado()).isEqualTo(EstadoPago.APROBADO);
         assertThat(resultado).isNotNull();
+    }
+
+    @Test
+    void crear_publicaLaAlertaCuandoElDetectorLaGenera() {
+        when(pagoRepository.save(any(Pago.class))).thenReturn(pagoGuardado);
+        AlertaPagoEvent alerta = new AlertaPagoEvent(1L, 1L, BigDecimal.valueOf(500000), "TARJETA",
+                "PENDIENTE", "TXN-1", "Monto inusualmente alto", "ALTA", LocalDateTime.now());
+        when(detectorAlertasPago.evaluarCreacion(any(PagoResponseDTO.class))).thenReturn(Optional.of(alerta));
+
+        pagoService.crear(new PagoRequestDTO(1L, BigDecimal.valueOf(500000), MetodoPago.TARJETA));
+
+        verify(alertaPagoKafkaProducer).publicar(alerta);
+    }
+
+    @Test
+    void crear_noPublicaAlertaSiElDetectorNoDetectaNada() {
+        when(pagoRepository.save(any(Pago.class))).thenReturn(pagoGuardado);
+
+        pagoService.crear(new PagoRequestDTO(1L, BigDecimal.valueOf(1000), MetodoPago.TARJETA));
+
+        verify(alertaPagoKafkaProducer, never()).publicar(any());
     }
 }
