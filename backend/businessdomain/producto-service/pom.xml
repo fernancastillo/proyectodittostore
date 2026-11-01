@@ -14,4 +14,11 @@
     <name>producto-service</name>
     <description>Microservicio de catálogo de productos (cajas de cartas Pokémon) de Ditto Store</description>
 
+        <dependencies>
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
+        </dependency>
+    </dependencies>
+
 </project>

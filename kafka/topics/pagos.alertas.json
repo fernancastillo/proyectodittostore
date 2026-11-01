@@ -1,0 +1,10 @@
+{
+  "nombre": "pagos.alertas",
+  "particiones": 3,
+  "replicas": 3,
+  "configuraciones": {
+    "cleanup.policy": "delete",
+    "retention.ms": "86400000",
+    "min.insync.replicas": "2"
+  }
+}

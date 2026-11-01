@@ -9,6 +9,7 @@ import com.dittostore.businessdomain.pedidosservice.exception.PedidoNotFoundExce
 import com.dittostore.businessdomain.pedidosservice.messaging.producer.PedidoProducer;
 import com.dittostore.businessdomain.pedidosservice.repository.PedidoItemRepository;
 import com.dittostore.businessdomain.pedidosservice.repository.PedidoRepository;
+import com.dittostore.businessdomain.pedidosservice.messaging.kafka.producer.PedidoKafkaProducer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -39,6 +40,9 @@ class PedidoServiceTest {
 
     @Mock
     private PedidoProducer pedidoProducer;
+
+    @Mock
+    private PedidoKafkaProducer pedidoKafkaProducer;
 
     @InjectMocks
     private PedidoServiceImpl pedidoService;
@@ -157,5 +161,18 @@ class PedidoServiceTest {
 
         assertThatThrownBy(() -> pedidoService.aplicarResultadoPago(99L, "APROBADO"))
                 .isInstanceOf(PedidoNotFoundException.class);
+    }
+
+    @Test
+    void crear_publicaElEventoTambienEnKafka() {
+        PedidoItemRequestDTO item = new PedidoItemRequestDTO(1L, 2, BigDecimal.valueOf(15000));
+        PedidoRequestDTO request = new PedidoRequestDTO(10L, "Av. Siempre Viva 123", List.of(item));
+
+        when(pedidoRepository.save(any(Pedido.class))).thenReturn(pedidoGuardado);
+        when(pedidoItemRepository.findByPedidoId(1L)).thenReturn(List.of());
+
+        pedidoService.crear(request);
+
+        verify(pedidoKafkaProducer).publicarCambioEstado(any(Pedido.class), any());
     }
 }
