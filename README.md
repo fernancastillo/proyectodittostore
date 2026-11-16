@@ -72,6 +72,7 @@ DittoStore/
 │       └── reviews-service/
 ├── config-repo/                     # Configuración centralizada (Config Server)
 ├── docker-compose.yml               # Clúster RabbitMQ de 2 nodos
+├── docker-compose.kafka.yml         # Clúster Kafka (3 ZooKeeper + 3 brokers + Kafka UI)
 ├── rabbitmq/
 │   └── cluster.conf                 # Formación automática del clúster
 ├── docker-compose.kafka.yml         # Clúster Kafka: 3 ZooKeeper + 3 brokers + Kafka UI
@@ -150,7 +151,14 @@ DittoStore/
    java -jar infrastructure/rabbit-admin-service/target/rabbit-admin-service-0.0.1-SNAPSHOT.jar
    java -jar infrastructure/kafka-admin-service/target/kafka-admin-service-0.0.1-SNAPSHOT.jar
 
-   # 4. Los 6 microservicios de negocio (orden indistinto entre ellos)
+6. **Crea los tópicos de Kafka** (el clúster tiene la creación automática de tópicos desactivada, así que sin este paso los productores no pueden publicar). Desde la raíz del repositorio, con un JWT válido del tenant de Azure:
+```bash
+   BASE=http://localhost:8089 TOKEN=<JWT> ./kafka/crear-topicos.sh
+```
+   Detalle en [Streaming de eventos con Apache Kafka](#streaming-de-eventos-con-apache-kafka).
+
+7. **Levanta los 6 microservicios de negocio** (orden indistinto entre ellos):
+```bash
    java -jar businessdomain/producto-service/target/producto-service-0.0.1-SNAPSHOT.jar
    java -jar businessdomain/usuarios-service/target/usuarios-service-0.0.1-SNAPSHOT.jar
    java -jar businessdomain/carrito-service/target/carrito-service-0.0.1-SNAPSHOT.jar
